@@ -1,0 +1,2482 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FF BATTLE ARENA - Global Esports Tournament Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs for Realtime Cloud Sync (100% Preserved) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, get, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_Eq2J6xC4aclpAoaOwI_eXkxCsIt-fQI",
+            authDomain: "ff-tournament-101ba.firebaseapp.com",
+            databaseURL: "https://ff-tournament-101ba-default-rtdb.firebaseio.com",
+            projectId: "ff-tournament-101ba",
+            storageBucket: "ff-tournament-101ba.firebasestorage.app",
+            messagingSenderId: "322986026316",
+            appId: "1:322986026316:web:f6d641620d5b0c5e665be9",
+            measurementId: "G-YC0MF0VR9J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.FB = { db, ref, set, get, onValue, push, remove };
+        window.dispatchEvent(new Event('firebase-ready'));
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #08090C;
+            --bg-secondary: #0D1016;
+            --bg-card: #11151D;
+            --bg-elevated: #171C25;
+            --border-subtle: #242B36;
+            --accent-orange: #FF6A1A;
+            --accent-orange-hover: #FF8B3D;
+            --text-primary: #F5F7FA;
+            --text-secondary: #A0A8B5;
+            --text-muted: #737D8B;
+            --status-success: #35C98A;
+            --status-warning: #E8B04B;
+            --status-error: #F05C64;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-primary);
+            background-image: 
+                radial-gradient(circle at 50% -10%, rgba(255, 106, 26, 0.11) 0%, rgba(8, 9, 12, 0) 55%),
+                radial-gradient(circle at 85% 30%, rgba(255, 106, 26, 0.04) 0%, transparent 45%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            touch-action: pan-x pan-y;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+
+        .font-gaming {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.02em;
+        }
+
+        /* Surface & Card System */
+        .esports-surface {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.45);
+        }
+
+        .esports-elevated {
+            background-color: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .esports-header-glass {
+            background: rgba(13, 16, 22, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-color: var(--border-subtle);
+        }
+
+        .hero-ambient {
+            background: linear-gradient(145deg, #151A24 0%, #0E1219 100%);
+            border: 1px solid rgba(255, 106, 26, 0.28);
+            box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 139, 61, 0.14);
+        }
+
+        /* Primary & Secondary Button System */
+        .btn-primary-orange {
+            background: linear-gradient(135deg, #FF6A1A 0%, #E65307 100%);
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 139, 61, 0.35);
+            box-shadow: 0 4px 14px rgba(255, 106, 26, 0.28);
+            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary-orange:hover {
+            background: linear-gradient(135deg, #FF7A33 0%, #FF6A1A 100%);
+            box-shadow: 0 6px 20px rgba(255, 106, 26, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary-orange:active {
+            transform: scale(0.985) translateY(0);
+            box-shadow: 0 2px 8px rgba(255, 106, 26, 0.25);
+        }
+
+        .btn-secondary-dark {
+            background-color: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+            transition: all 0.18s ease;
+        }
+
+        .btn-secondary-dark:hover {
+            border-color: rgba(255, 106, 26, 0.5);
+            background-color: #1D232E;
+        }
+
+        .btn-secondary-dark:active {
+            transform: scale(0.985);
+        }
+
+        /* Input System */
+        .esports-input {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .esports-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .esports-input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 3px rgba(255, 106, 26, 0.14);
+        }
+
+        /* Custom Orange Checkbox Styles for Slot Allocation (Preserved & Polished) */
+        .slot-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1.75px solid #FF6A1A;
+            border-radius: 4px;
+            background-color: rgba(255, 106, 26, 0.06);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+        .slot-checkbox:checked {
+            background-color: #FF6A1A;
+            border-color: #FF6A1A;
+        }
+        .slot-checkbox:checked::after {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 9px;
+            color: #08090C;
+        }
+        .slot-checkbox:disabled {
+            border-color: #323B49;
+            background-color: #171C25;
+            cursor: not-allowed;
+        }
+        .slot-checkbox:disabled:checked {
+            background-color: #525D6E;
+            border-color: #525D6E;
+        }
+        .slot-checkbox:disabled:checked::after {
+            color: #0D1016;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #08090C; }
+        ::-webkit-scrollbar-thumb { background: #242B36; border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FF6A1A; }
+
+        /* Subtle Live Pulse */
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.45; }
+        }
+        .live-dot {
+            animation: subtlePulse 2s infinite ease-in-out;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#FF6A1A] selection:text-white antialiased">
+
+    <!-- Global App Wrapper -->
+    <div id="app" class="w-full max-w-md mx-auto flex-grow flex flex-col relative pb-20">
+
+        <!---------------- AUTH SECTION (Login & Signup) ---------------->
+        <div id="authContainer" class="w-full px-4 py-6 flex flex-col justify-center my-auto hidden">
+            <div class="text-center mb-7">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#FF6A1A]/10 border border-[#FF6A1A]/30 mb-3 shadow-lg">
+                    <i class="fa-solid fa-crosshairs text-2xl text-[#FF6A1A]"></i>
+                </div>
+                <h1 class="font-gaming text-2xl font-extrabold text-[#F5F7FA] tracking-tight">FF BATTLE <span class="text-[#FF6A1A]">ARENA</span></h1>
+                <p class="text-[11px] text-[#737D8B] mt-1 uppercase tracking-[0.16em] font-semibold">Competitive Esports Tournament Platform</p>
+            </div>
+
+            <!-- Auth Tabs -->
+            <div class="flex border border-[#242B36] rounded-xl bg-[#0D1016] p-1 mb-5">
+                <button onclick="switchAuthTab('login')" id="tabLoginBtn" class="flex-1 py-2.5 font-gaming text-xs font-bold rounded-lg bg-[#FF6A1A] text-white transition shadow-sm">SIGN IN</button>
+                <button onclick="switchAuthTab('register')" id="tabRegisterBtn" class="flex-1 py-2.5 font-gaming text-xs font-bold rounded-lg text-[#A0A8B5] hover:text-white transition">REGISTER</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginFormCard" class="esports-surface p-5 rounded-2xl space-y-4">
+                <div class="border-b border-[#242B36] pb-3">
+                    <h2 class="font-gaming text-sm font-bold text-[#F5F7FA] flex items-center gap-2">
+                        <i class="fa-solid fa-right-to-bracket text-[#FF6A1A] text-xs"></i>
+                        <span>Player Sign In</span>
+                    </h2>
+                    <p class="text-[11px] text-[#737D8B] mt-0.5">Access your tournament dashboard & wallet</p>
+                </div>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#A0A8B5] mb-1.5">Mobile Number or Username</label>
+                        <input type="text" id="loginPhone" placeholder="Enter mobile or username" class="esports-input w-full rounded-xl px-3.5 py-2.5 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#A0A8B5] mb-1.5">Password</label>
+                        <input type="password" id="loginPass" placeholder="Enter your password" class="esports-input w-full rounded-xl px-3.5 py-2.5 text-xs">
+                    </div>
+                </div>
+                <button onclick="handleLogin()" class="w-full btn-primary-orange font-gaming text-xs font-bold py-3 rounded-xl uppercase tracking-wider mt-1">ENTER ARENA</button>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerFormCard" class="esports-surface p-5 rounded-2xl space-y-3.5 hidden">
+                <div class="border-b border-[#242B36] pb-3">
+                    <h2 class="font-gaming text-sm font-bold text-[#F5F7FA] flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus text-[#FF6A1A] text-xs"></i>
+                        <span>Create Player Profile</span>
+                    </h2>
+                    <p class="text-[11px] text-[#737D8B] mt-0.5">Register with your official Free Fire UID</p>
+                </div>
+                <div class="space-y-2.5">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#A0A8B5] mb-1">Username</label>
+                        <input type="text" id="regUsername" placeholder="Choose player username" class="esports-input w-full rounded-xl px-3.5 py-2 text-xs">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-[#A0A8B5] mb-1">Mobile Number</label>
+                            <input type="tel" id="regPhone" placeholder="10-digit mobile" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-[#A0A8B5] mb-1">Free Fire UID</label>
+                            <input type="number" id="regUid" placeholder="Numbers only" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#A0A8B5] mb-1">Email Address</label>
+                        <input type="email" id="regEmail" placeholder="player@example.com" class="esports-input w-full rounded-xl px-3.5 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#A0A8B5] mb-1">Password</label>
+                        <input type="password" id="regPass" placeholder="Create strong password" class="esports-input w-full rounded-xl px-3.5 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#A0A8B5] mb-1">Invite Code <span class="text-[#737D8B] font-normal">(Optional)</span></label>
+                        <input type="text" id="regInviteCode" placeholder="e.g. BOOYAH-123456" class="esports-input w-full rounded-xl px-3.5 py-2 text-xs uppercase">
+                    </div>
+                </div>
+                <button onclick="handleRegister()" class="w-full btn-primary-orange font-gaming text-xs font-bold py-3 rounded-xl uppercase tracking-wider mt-1">CREATE ACCOUNT</button>
+            </div>
+        </div>
+
+
+        <!---------------- MAIN USER DASHBOARD ---------------->
+        <div id="mainDashboard" class="w-full hidden flex flex-col flex-grow">
+            
+            <!-- Top Navigation Header -->
+            <header class="esports-header-glass sticky top-0 z-20 px-3.5 py-2.5 flex justify-between items-center border-b">
+                <div class="flex items-center space-x-2.5 overflow-hidden">
+                    <div class="w-8 h-8 rounded-xl bg-[#FF6A1A]/15 border border-[#FF6A1A]/35 flex items-center justify-center font-gaming text-[#FF6A1A] font-black text-xs shrink-0">
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <h1 id="brandTitleDisplay" class="font-gaming text-xs font-extrabold text-[#F5F7FA] tracking-wide truncate">BOOYAH ZONE</h1>
+                        <p id="userUidDisplay" class="text-[10px] text-[#A0A8B5] font-medium truncate">UID: 000000</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 shrink-0">
+                    <div onclick="switchTab('wallet')" class="bg-[#11151D] border border-[#242B36] hover:border-[#FF6A1A]/50 px-2.5 py-1.5 rounded-xl flex items-center space-x-1.5 cursor-pointer transition">
+                        <i class="fa-solid fa-wallet text-[#FF6A1A] text-[11px]"></i>
+                        <span id="walletBalanceDisplay" class="font-gaming text-xs font-bold text-[#35C98A]">₹0</span>
+                    </div>
+                    <button onclick="logout()" title="Logout" class="w-8 h-8 rounded-xl bg-[#11151D] border border-[#242B36] text-[#A0A8B5] hover:text-[#F05C64] hover:border-[#F05C64]/40 flex items-center justify-center transition">
+                        <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic Tab Contents -->
+            <div class="flex-grow p-3.5 space-y-4">
+
+                <!-- 1. HOME TAB -->
+                <div id="tabHome" class="space-y-4">
+                    <!-- Hero Featured Card -->
+                    <div class="relative rounded-2xl overflow-hidden hero-ambient p-4">
+                        <div class="absolute -right-3 -bottom-4 opacity-[0.07] text-[#FF6A1A] text-7xl pointer-events-none">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="inline-flex items-center gap-1.5 bg-[#FF6A1A]/15 border border-[#FF6A1A]/35 text-[#FF8B3D] text-[10px] font-gaming px-2.5 py-0.5 rounded-full font-bold uppercase">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#FF6A1A] live-dot"></span> Season 1 Live
+                            </span>
+                        </div>
+                        <h2 class="font-gaming text-base font-extrabold text-[#F5F7FA] mt-2 leading-snug tracking-tight">COMPETITIVE ESPORTS ARENA</h2>
+                        <p class="text-xs text-[#A0A8B5] mt-1 leading-relaxed max-w-[90%]">Join daily custom rooms, lock your tactical squad slot, and compete for instant prize payouts.</p>
+                        <div class="mt-3.5 flex items-center space-x-2.5">
+                            <button onclick="switchTab('tournaments')" class="btn-primary-orange font-gaming text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2">
+                                <span>BROWSE MATCHES</span>
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                            <button onclick="switchTab('results')" class="btn-secondary-dark font-gaming text-xs font-semibold px-3 py-2.5 rounded-xl">
+                                <i class="fa-solid fa-upload text-[#FF6A1A] mr-1"></i> Proof
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Platform Statistics Bar -->
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <div class="esports-surface p-3 rounded-xl text-left">
+                            <div class="flex items-center justify-between text-[#737D8B] mb-1">
+                                <span class="text-[10px] font-semibold uppercase tracking-wider">Matches</span>
+                                <i class="fa-solid fa-gamepad text-[10px] text-[#FF6A1A]"></i>
+                            </div>
+                            <p id="statTotalMatches" class="font-gaming text-sm font-extrabold text-[#F5F7FA] truncate">0</p>
+                        </div>
+                        <div class="esports-surface p-3 rounded-xl text-left">
+                            <div class="flex items-center justify-between text-[#737D8B] mb-1">
+                                <span class="text-[10px] font-semibold uppercase tracking-wider">Players</span>
+                                <i class="fa-solid fa-users text-[10px] text-[#35C98A]"></i>
+                            </div>
+                            <p id="statTotalPlayers" class="font-gaming text-sm font-extrabold text-[#35C98A] truncate">0</p>
+                        </div>
+                        <div class="esports-surface p-3 rounded-xl text-left">
+                            <div class="flex items-center justify-between text-[#737D8B] mb-1">
+                                <span class="text-[10px] font-semibold uppercase tracking-wider">Prizes</span>
+                                <i class="fa-solid fa-coins text-[10px] text-[#E8B04B]"></i>
+                            </div>
+                            <p id="statTotalPrize" class="font-gaming text-sm font-extrabold text-[#E8B04B] truncate">₹0</p>
+                        </div>
+                    </div>
+
+                    <!-- Category Quick Select Grid -->
+                    <div class="space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase tracking-wider">Game Formats</h3>
+                            <span class="text-[10px] text-[#737D8B] font-medium">Select Mode</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div onclick="selectHomeCategory('BR Map')" class="esports-surface p-3.5 rounded-xl cursor-pointer hover:border-[#FF6A1A]/60 transition group flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-xl bg-[#FF6A1A]/12 border border-[#FF6A1A]/25 text-[#FF6A1A] flex items-center justify-center text-sm shrink-0 group-hover:bg-[#FF6A1A] group-hover:text-white transition">
+                                    <i class="fa-solid fa-earth-americas"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <h4 class="font-gaming text-xs font-bold text-[#F5F7FA] truncate">BR Map</h4>
+                                    <p class="text-[10px] text-[#737D8B] truncate">Battle Royale</p>
+                                </div>
+                            </div>
+                            <div onclick="selectHomeCategory('CS Map')" class="esports-surface p-3.5 rounded-xl cursor-pointer hover:border-[#FF6A1A]/60 transition group flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-xl bg-[#171C25] border border-[#242B36] text-[#F5F7FA] flex items-center justify-center text-sm shrink-0 group-hover:border-[#FF6A1A]/50 group-hover:text-[#FF6A1A] transition">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <h4 class="font-gaming text-xs font-bold text-[#F5F7FA] truncate">CS Map</h4>
+                                    <p class="text-[10px] text-[#737D8B] truncate">Clash Squad</p>
+                                </div>
+                            </div>
+                            <div onclick="selectHomeCategory('LW Map')" class="esports-surface p-3.5 rounded-xl cursor-pointer hover:border-[#FF6A1A]/60 transition group flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-xl bg-[#171C25] border border-[#242B36] text-[#E8B04B] flex items-center justify-center text-sm shrink-0 group-hover:border-[#FF6A1A]/50 transition">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <h4 class="font-gaming text-xs font-bold text-[#F5F7FA] truncate">LW Map</h4>
+                                    <p class="text-[10px] text-[#737D8B] truncate">Lone Wolf 1v1/2v2</p>
+                                </div>
+                            </div>
+                            <div onclick="selectHomeCategory('Free Custom')" class="esports-surface p-3.5 rounded-xl cursor-pointer hover:border-[#FF6A1A]/60 transition group flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-xl bg-[#35C98A]/10 border border-[#35C98A]/25 text-[#35C98A] flex items-center justify-center text-sm shrink-0 group-hover:bg-[#35C98A] group-hover:text-[#08090C] transition">
+                                    <i class="fa-solid fa-gift"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <h4 class="font-gaming text-xs font-bold text-[#F5F7FA] truncate">Free Custom</h4>
+                                    <p class="text-[10px] text-[#737D8B] truncate">Practice Scrims</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. ALL TOURNAMENTS TAB -->
+                <div id="tabTournaments" class="space-y-3.5 hidden">
+                    <div class="flex border border-[#242B36] rounded-xl bg-[#0D1016] p-1">
+                        <button onclick="switchTourneySection('upcoming')" id="secUpcomingBtn" class="flex-1 py-2 font-gaming text-[11px] font-bold rounded-lg bg-[#FF6A1A] text-white transition">UPCOMING</button>
+                        <button onclick="switchTourneySection('live')" id="secLiveBtn" class="flex-1 py-2 font-gaming text-[11px] font-bold rounded-lg text-[#A0A8B5] transition">LIVE</button>
+                        <button onclick="switchTourneySection('results')" id="secResultsBtn" class="flex-1 py-2 font-gaming text-[11px] font-bold rounded-lg text-[#A0A8B5] transition">COMPLETED</button>
+                    </div>
+
+                    <!-- Category Filter Bar -->
+                    <div class="flex space-x-2 overflow-x-auto pb-1 text-[11px]" id="tourneyFilterBar">
+                        <button onclick="filterTournaments('all')" class="bg-[#FF6A1A] text-white px-3 py-1.5 rounded-lg font-bold font-gaming shrink-0 transition">All</button>
+                        <button onclick="filterTournaments('BR Map')" class="bg-[#11151D] border border-[#242B36] text-[#A0A8B5] hover:text-white px-3 py-1.5 rounded-lg font-semibold font-gaming shrink-0 transition">BR Map</button>
+                        <button onclick="filterTournaments('CS Map')" class="bg-[#11151D] border border-[#242B36] text-[#A0A8B5] hover:text-white px-3 py-1.5 rounded-lg font-semibold font-gaming shrink-0 transition">CS Map</button>
+                        <button onclick="filterTournaments('LW Map')" class="bg-[#11151D] border border-[#242B36] text-[#A0A8B5] hover:text-white px-3 py-1.5 rounded-lg font-semibold font-gaming shrink-0 transition">LW Map</button>
+                        <button onclick="filterTournaments('Free Custom')" class="bg-[#11151D] border border-[#242B36] text-[#A0A8B5] hover:text-white px-3 py-1.5 rounded-lg font-semibold font-gaming shrink-0 transition">Free Custom</button>
+                    </div>
+
+                    <div id="tournamentsListContainer" class="space-y-3">
+                        <div class="esports-surface p-6 rounded-2xl text-center">
+                            <p class="text-xs text-[#737D8B]">Loading tournaments...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. MY TOURNAMENTS TAB -->
+                <div id="tabMyTournaments" class="space-y-3.5 hidden">
+                    <div class="flex items-center justify-between border-b border-[#242B36] pb-2.5">
+                        <h3 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-gamepad text-[#FF6A1A]"></i>
+                            <span>My Joined Tournaments</span>
+                        </h3>
+                        <button onclick="switchTab('results')" class="text-[10px] font-gaming font-bold text-[#FF6A1A] hover:underline">Submit Proof</button>
+                    </div>
+                    <div id="myJoinedTournamentsContainer" class="space-y-3">
+                        <div class="esports-surface p-6 rounded-2xl text-center">
+                            <p class="text-xs text-[#737D8B]">You have not joined any tournaments yet.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. UPLOAD RESULTS TAB -->
+                <div id="tabResults" class="esports-surface p-4 rounded-2xl space-y-3.5 hidden">
+                    <div class="border-b border-[#242B36] pb-3">
+                        <h3 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-camera text-[#FF6A1A]"></i>
+                            <span>Match Results & Kills Proof</span>
+                        </h3>
+                        <p class="text-[11px] text-[#A0A8B5] mt-1">Submit your post-match scoreboard screenshot for admin prize verification.</p>
+                    </div>
+                    
+                    <div class="space-y-3 bg-[#0D1016] p-3.5 rounded-xl border border-[#242B36] text-xs">
+                        <div>
+                            <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Tournament Name</label>
+                            <input type="text" id="resMatchName" placeholder="e.g., Evening BR Solo #12" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Total Kills</label>
+                                <input type="number" id="resKills" placeholder="0" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Match Outcome</label>
+                                <select id="resWinStatus" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                                    <option value="Won">Win (Booyah)</option>
+                                    <option value="Lost" selected>Lose</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Room ID</label>
+                                <input type="text" id="resRoomId" placeholder="Room ID used" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Free Fire UID</label>
+                                <input type="text" id="resGameUid" placeholder="Your Game UID" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1.5">Upload Result Screenshot</label>
+                            <input type="file" id="resScreenshot" accept="image/*" class="w-full text-[11px] text-[#A0A8B5] file:mr-2.5 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-[#FF6A1A] file:text-white cursor-pointer">
+                        </div>
+                        <button onclick="sendResultToAdmin()" class="w-full btn-primary-orange font-gaming text-xs font-bold py-3 rounded-xl uppercase tracking-wider">SUBMIT TO ADMIN</button>
+                    </div>
+                </div>
+
+                <!-- 5. WALLET TAB -->
+                <div id="tabWallet" class="space-y-4 hidden">
+                    <!-- Balance Hero Card -->
+                    <div class="hero-ambient p-4 rounded-2xl text-center">
+                        <p class="text-[11px] text-[#A0A8B5] font-semibold uppercase tracking-wider">Available Wallet Balance</p>
+                        <h2 id="walletPageBalance" class="font-gaming text-2xl font-black text-[#35C98A] mt-1">₹0</h2>
+                        <div class="grid grid-cols-2 gap-2.5 mt-3.5 text-left">
+                            <div class="bg-[#0D1016]/90 border border-[#242B36] p-2.5 rounded-xl">
+                                <p class="text-[10px] text-[#737D8B] font-medium">Total Deposits</p>
+                                <p id="totalDepositsDisplay" class="font-gaming text-xs font-bold text-[#F5F7FA] mt-0.5">₹0</p>
+                            </div>
+                            <div class="bg-[#0D1016]/90 border border-[#242B36] p-2.5 rounded-xl">
+                                <p class="text-[10px] text-[#737D8B] font-medium">Total Withdrawals</p>
+                                <p id="totalWithdrawalsDisplay" class="font-gaming text-xs font-bold text-[#F5F7FA] mt-0.5">₹0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deposit Section -->
+                    <div class="esports-surface p-4 rounded-2xl space-y-3">
+                        <h3 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-qrcode text-[#FF6A1A]"></i>
+                            <span>Add Funds via UPI</span>
+                        </h3>
+                        <div class="bg-[#0D1016] p-3.5 rounded-xl text-center space-y-3 border border-[#242B36]">
+                            <div id="qrCodeContainer" class="w-36 h-36 mx-auto bg-[#171C25] flex items-center justify-center rounded-xl border border-[#242B36] overflow-hidden">
+                                <i class="fa-solid fa-qrcode text-4xl text-[#737D8B]"></i>
+                            </div>
+                            <p id="displayAdminUpi" class="text-[11px] text-[#E8B04B] font-semibold truncate px-2 bg-[#171C25] py-1.5 rounded-lg border border-[#242B36]">UPI ID: booyahzone@upi</p>
+                            <div class="space-y-2.5 text-left">
+                                <input type="text" id="depositUtr" placeholder="Enter 12-digit UTR / Ref Number" class="esports-input w-full rounded-xl px-3 py-2.5 text-xs">
+                                <input type="number" id="depositAmount" placeholder="Amount Paid (₹)" class="esports-input w-full rounded-xl px-3 py-2.5 text-xs">
+                            </div>
+                            <button onclick="submitDeposit()" class="w-full btn-primary-orange font-gaming text-xs font-bold py-2.5 rounded-xl uppercase tracking-wider">SUBMIT DEPOSIT REQUEST</button>
+                        </div>
+                    </div>
+
+                    <!-- Withdraw Section (Mandatory QR Upload) -->
+                    <div class="esports-surface p-4 rounded-2xl space-y-3">
+                        <h3 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-money-bill-transfer text-[#35C98A]"></i>
+                            <span>Withdraw Winnings</span>
+                        </h3>
+                        <div class="space-y-2.5">
+                            <input type="number" id="withdrawAmount" placeholder="Withdraw Amount (₹)" class="esports-input w-full rounded-xl px-3 py-2.5 text-xs">
+                            <input type="text" id="withdrawUpi" placeholder="Enter Your UPI ID (e.g., user@paytm)" class="esports-input w-full rounded-xl px-3 py-2.5 text-xs">
+                            
+                            <div class="bg-[#0D1016] p-3 rounded-xl border border-[#242B36] space-y-2">
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5]">Upload Your UPI QR Code <span class="text-[#F05C64]">* (Mandatory)</span></label>
+                                <div class="flex items-center justify-between gap-2">
+                                    <input type="file" id="withdrawQrInput" accept="image/*" onchange="previewWithdrawQr(event)" class="w-full text-[11px] text-[#A0A8B5] file:mr-2.5 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-[#171C25] file:text-[#F5F7FA] file:border file:border-[#242B36] cursor-pointer">
+                                    <!-- QR Thumbnail Display -->
+                                    <div id="withdrawQrThumbContainer" class="hidden relative w-10 h-10 rounded-lg overflow-hidden border border-[#FF6A1A] cursor-pointer shrink-0" onclick="openQrPreviewModal()">
+                                        <img id="withdrawQrThumbImg" src="" class="w-full h-full object-cover">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="submitWithdraw()" class="w-full btn-secondary-dark hover:border-[#FF6A1A] font-gaming text-xs font-bold py-2.5 rounded-xl uppercase tracking-wider">SUBMIT WITHDRAWAL</button>
+                        </div>
+                    </div>
+
+                    <!-- Transaction History -->
+                    <div class="esports-surface p-4 rounded-2xl space-y-2.5">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase tracking-wider">Transaction Ledger</h4>
+                            <button onclick="clearTransactionHistory()" class="bg-[#F05C64]/15 hover:bg-[#F05C64] text-[#F05C64] hover:text-white px-2.5 py-1 rounded-lg text-[10px] font-bold transition">CLEAR</button>
+                        </div>
+                        <div id="userTransactionHistory" class="bg-[#0D1016] p-3 rounded-xl text-xs space-y-2 border border-[#242B36] max-h-44 overflow-y-auto">
+                            <p class="text-[#737D8B] text-[11px]">No transactions recorded yet.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. PROFILE TAB -->
+                <div id="tabProfile" class="space-y-4 hidden">
+                    <!-- Support CTA -->
+                    <button onclick="openWhatsAppSupport()" class="w-full bg-[#35C98A]/15 hover:bg-[#35C98A]/25 border border-[#35C98A]/35 text-[#35C98A] font-gaming text-xs font-bold py-3 rounded-xl transition flex items-center justify-center space-x-2">
+                        <i class="fa-brands fa-whatsapp text-base"></i>
+                        <span>PLAYER SUPPORT & HELP DESK</span>
+                    </button>
+
+                    <!-- Leaderboard Section -->
+                    <div class="esports-surface p-4 rounded-2xl space-y-3">
+                        <div class="flex items-center justify-between border-b border-[#242B36] pb-2.5">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-crown text-[#E8B04B] text-xs"></i>
+                                <h3 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase tracking-wider">Top Arena Winners</h3>
+                            </div>
+                            <span class="text-[10px] text-[#737D8B]">All-Time</span>
+                        </div>
+                        <div id="podiumLeaderboard" class="grid grid-cols-3 gap-2 pt-1"></div>
+                        <div id="restLeaderboard" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
+                    </div>
+
+                    <!-- Profile Settings -->
+                    <div class="esports-surface p-4 rounded-2xl space-y-3">
+                        <h3 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase tracking-wider border-b border-[#242B36] pb-2.5 flex items-center gap-2">
+                            <i class="fa-solid fa-id-badge text-[#FF6A1A]"></i>
+                            <span>Account Details</span>
+                        </h3>
+                        <div class="space-y-2.5 text-xs">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Username</label>
+                                <input type="text" id="profileUsernameInput" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Email Address</label>
+                                <input type="email" id="profileEmailInput" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Default UPI ID</label>
+                                <input type="text" id="profileUpiInput" placeholder="user@upi" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                            </div>
+                            <button onclick="saveProfileChanges()" class="w-full btn-primary-orange font-gaming text-xs font-bold py-2.5 rounded-xl transition uppercase tracking-wider mt-1">SAVE PROFILE</button>
+                        </div>
+                    </div>
+
+                    <!-- Refer & Earn Section -->
+                    <div class="esports-surface p-4 rounded-2xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-gaming text-xs font-bold text-[#FF6A1A] uppercase flex items-center gap-1.5">
+                                <i class="fa-solid fa-share-nodes"></i>
+                                <span>Refer & Earn</span>
+                            </h4>
+                            <span class="text-[10px] bg-[#FF6A1A]/15 text-[#FF8B3D] px-2 py-0.5 rounded font-semibold">Invite Code</span>
+                        </div>
+                        <p class="text-[11px] text-[#A0A8B5]">Share your personal invite code with squadmates when they register.</p>
+                        <div class="flex items-center space-x-2 bg-[#0D1016] border border-[#242B36] p-2 rounded-xl">
+                            <span id="myReferralCode" class="font-gaming text-[#F5F7FA] font-bold text-xs flex-grow truncate pl-1.5">BOOYAH-REF</span>
+                            <button onclick="copyReferralCode()" class="bg-[#FF6A1A] hover:bg-[#FF8B3D] text-white text-[10px] px-3 py-1.5 rounded-lg font-gaming font-bold shrink-0 transition">COPY</button>
+                        </div>
+                    </div>
+
+                    <!-- Admin Login Button -->
+                    <div class="pt-1">
+                        <button onclick="openAdminModal()" class="w-full btn-secondary-dark py-3 rounded-xl font-gaming text-xs font-bold flex items-center justify-center space-x-2 text-[#A0A8B5] hover:text-[#FF6A1A]">
+                            <i class="fa-solid fa-shield-halved text-[#FF6A1A]"></i>
+                            <span>ADMIN CONTROL PANEL</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <nav class="esports-header-glass fixed bottom-0 left-0 right-0 max-w-md mx-auto px-2 py-2 flex justify-around items-center border-t z-20">
+                <button onclick="switchTab('home')" id="navBtnHome" class="flex flex-col items-center text-[#FF6A1A] transition py-0.5 px-2">
+                    <i class="fa-solid fa-house text-xs"></i>
+                    <span class="text-[9px] font-gaming font-bold mt-1">Home</span>
+                </button>
+                <button onclick="switchTab('tournaments')" id="navBtnTournaments" class="flex flex-col items-center text-[#737D8B] hover:text-[#F5F7FA] transition py-0.5 px-2">
+                    <i class="fa-solid fa-trophy text-xs"></i>
+                    <span class="text-[9px] font-gaming font-bold mt-1">Matches</span>
+                </button>
+                <button onclick="switchTab('myTournaments')" id="navBtnMyTournaments" class="flex flex-col items-center text-[#737D8B] hover:text-[#F5F7FA] transition py-0.5 px-2">
+                    <i class="fa-solid fa-gamepad text-xs"></i>
+                    <span class="text-[9px] font-gaming font-bold mt-1">My Slots</span>
+                </button>
+                <button onclick="switchTab('wallet')" id="navBtnWallet" class="flex flex-col items-center text-[#737D8B] hover:text-[#F5F7FA] transition py-0.5 px-2">
+                    <i class="fa-solid fa-wallet text-xs"></i>
+                    <span class="text-[9px] font-gaming font-bold mt-1">Wallet</span>
+                </button>
+                <button onclick="switchTab('profile')" id="navBtnProfile" class="flex flex-col items-center text-[#737D8B] hover:text-[#F5F7FA] transition py-0.5 px-2">
+                    <i class="fa-solid fa-user text-xs"></i>
+                    <span class="text-[9px] font-gaming font-bold mt-1">Profile</span>
+                </button>
+            </nav>
+
+        </div>
+
+    </div>
+
+
+    <!---------------- POPUP NOTIFICATION MODAL ---------------->
+    <div id="customModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="esports-surface p-5 rounded-2xl max-w-xs w-full text-center space-y-3.5 border border-[#242B36] shadow-2xl">
+            <div id="modalIcon" class="text-3xl text-[#FF6A1A]"><i class="fa-solid fa-circle-exclamation"></i></div>
+            <div class="space-y-1">
+                <h3 id="modalTitle" class="font-gaming text-sm font-bold text-[#F5F7FA]">Notification</h3>
+                <p id="modalMessage" class="text-xs text-[#A0A8B5] leading-relaxed">Message content.</p>
+            </div>
+            <button onclick="closeModal()" class="w-full btn-primary-orange font-gaming text-xs font-bold py-2.5 rounded-xl uppercase tracking-wider">ACKNOWLEDGE</button>
+        </div>
+    </div>
+
+
+    <!---------------- QR PREVIEW MODAL ---------------->
+    <div id="qrPreviewModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-4 hidden">
+        <div class="esports-surface p-4 rounded-2xl max-w-xs w-full text-center space-y-3 relative shadow-2xl">
+            <div class="flex justify-between items-center border-b border-[#242B36] pb-2.5">
+                <span class="font-gaming text-xs font-bold text-[#F5F7FA]">UPI QR CODE PREVIEW</span>
+                <button onclick="closeQrPreviewModal()" class="w-7 h-7 rounded-lg bg-[#171C25] text-[#A0A8B5] flex items-center justify-center hover:text-white transition"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            <div class="w-60 h-60 mx-auto bg-[#08090C] rounded-xl overflow-hidden border border-[#242B36] flex items-center justify-center">
+                <img id="enlargedQrImg" src="" class="w-full h-full object-contain">
+            </div>
+            <button onclick="closeQrPreviewModal()" class="w-full btn-secondary-dark font-gaming text-xs font-bold py-2.5 rounded-xl">CLOSE</button>
+        </div>
+    </div>
+
+
+    <!---------------- GIVE BONUS POPUP MODAL ---------------->
+    <div id="giveBonusModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="esports-surface p-5 rounded-2xl max-w-xs w-full space-y-3.5 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-[#242B36] pb-2.5">
+                <h3 class="font-gaming text-xs font-bold text-[#FF6A1A] uppercase">Credit Login Bonus</h3>
+                <button onclick="closeGiveBonusModal()" class="text-[#A0A8B5] hover:text-white"><i class="fa-solid fa-xmark text-sm"></i></button>
+            </div>
+            <div class="bg-[#0D1016] p-2.5 rounded-xl border border-[#242B36] space-y-1 text-xs">
+                <p class="text-[#A0A8B5]">Player: <b id="bonusUserNameDisplay" class="text-[#F5F7FA]">---</b></p>
+                <p class="text-[#A0A8B5]">UID: <b id="bonusUserUidDisplay" class="text-[#FF8B3D]">---</b></p>
+            </div>
+            <div>
+                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1.5">BONUS AMOUNT (₹)</label>
+                <input type="number" id="bonusAmountInput" placeholder="Enter bonus amount" class="esports-input w-full rounded-xl px-3 py-2.5 text-xs font-bold">
+            </div>
+            <button onclick="confirmGiveBonus()" class="w-full btn-primary-orange font-gaming text-xs font-bold py-2.5 rounded-xl uppercase tracking-wider">CONFIRM & CREDIT</button>
+        </div>
+    </div>
+
+
+    <!---------------- SLOT BOOKING & MATCH POSITION MODAL ---------------->
+    <div id="slotBookingModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex flex-col hidden overflow-hidden">
+        <div class="w-full max-w-md mx-auto h-[100dvh] flex flex-col bg-[#08090C] text-[#F5F7FA] relative border-x border-[#242B36]">
+            <header class="bg-[#0D1016] px-3.5 py-3 flex justify-between items-center border-b border-[#242B36] shrink-0">
+                <div class="overflow-hidden pr-2">
+                    <span class="text-[9px] font-gaming uppercase tracking-widest text-[#FF6A1A] block">Roster Position</span>
+                    <h3 id="slotModalTitle" class="font-gaming text-xs font-bold truncate text-[#F5F7FA] uppercase">SELECT MATCH POSITION</h3>
+                </div>
+                <button onclick="closeSlotModal()" class="w-8 h-8 rounded-xl bg-[#171C25] border border-[#242B36] text-[#A0A8B5] flex items-center justify-center shrink-0 hover:text-white hover:border-[#FF6A1A]/50 transition">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </header>
+
+            <!-- Legend Bar -->
+            <div class="bg-[#11151D] px-3.5 py-2 border-b border-[#242B36] flex items-center justify-between text-[10px] text-[#A0A8B5] shrink-0">
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm border border-[#FF6A1A] inline-block"></span> Available</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-[#FF6A1A] inline-block"></span> Selected</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-[#525D6E] inline-block"></span> Booked</span>
+            </div>
+
+            <div class="flex-grow p-3.5 overflow-y-auto space-y-2.5">
+                <div id="slotGridContainer" class="space-y-2.5"></div>
+            </div>
+
+            <!-- Fixed/Sticky JOIN NOW at the bottom -->
+            <div class="p-3.5 bg-[#0D1016] border-t border-[#242B36] shrink-0 space-y-2.5">
+                <div>
+                    <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Confirm Free Fire UID</label>
+                    <input type="number" id="slotGameUidInput" placeholder="Enter Free Fire UID (Numbers only)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                </div>
+                <button id="finalConfirmSlotBtn" class="w-full btn-primary-orange font-gaming text-xs font-bold py-3 rounded-xl uppercase tracking-wider">JOIN NOW</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!---------------- FULL-PAGE ADMIN PANEL ---------------->
+    <div id="adminModal" class="fixed inset-0 bg-[#08090C] z-50 flex flex-col hidden overflow-hidden">
+        <!-- Admin Login Gate -->
+        <div id="adminLoginView" class="w-full max-w-md mx-auto p-5 space-y-4 my-auto">
+            <div class="text-center space-y-2">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FF6A1A]/15 border border-[#FF6A1A]/30 text-[#FF6A1A] text-xl">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h3 class="font-gaming text-base font-extrabold text-[#F5F7FA] tracking-wide">ADMIN COMMAND</h3>
+                <p class="text-xs text-[#737D8B]">Enter authorized security key to continue</p>
+            </div>
+            <div class="esports-surface p-5 rounded-2xl space-y-3.5">
+                <div>
+                    <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1.5">ADMIN PASSWORD</label>
+                    <input type="password" id="adminPassInput" placeholder="Enter Owner Password" class="esports-input w-full rounded-xl px-3.5 py-2.5 text-xs">
+                </div>
+                <button onclick="verifyAdminLogin()" class="w-full btn-primary-orange font-gaming text-xs font-bold py-3 rounded-xl uppercase tracking-wider">UNLOCK DASHBOARD</button>
+                <button onclick="closeAdminModal()" class="w-full btn-secondary-dark text-xs font-semibold py-2.5 rounded-xl text-[#A0A8B5]">Return to Arena</button>
+            </div>
+        </div>
+
+        <!-- Admin Full Dashboard View -->
+        <div id="adminDashboardView" class="w-full max-w-md mx-auto flex flex-col flex-grow hidden overflow-hidden bg-[#08090C] text-[#F5F7FA] relative border-x border-[#242B36]">
+            <header class="bg-[#0D1016] border-b border-[#242B36] px-3.5 py-3 flex justify-between items-center z-10 shrink-0">
+                <div class="flex items-center space-x-2.5 overflow-hidden">
+                    <button onclick="toggleAdminDrawerSidebar()" class="w-8 h-8 rounded-lg bg-[#171C25] border border-[#242B36] text-[#F5F7FA] hover:border-[#FF6A1A] flex items-center justify-center focus:outline-none shrink-0 transition">
+                        <i class="fa-solid fa-bars text-xs"></i>
+                    </button>
+                    <div>
+                        <h2 class="font-gaming text-xs font-extrabold tracking-wider text-[#F5F7FA] truncate">ARENA ADMIN</h2>
+                        <span class="text-[9px] text-[#FF6A1A] font-semibold block leading-none">Control Center</span>
+                    </div>
+                </div>
+                <button onclick="logoutAdmin()" class="btn-secondary-dark hover:border-[#FF6A1A] font-gaming text-[10px] px-3 py-1.5 rounded-lg font-bold shrink-0">Exit</button>
+            </header>
+
+            <!-- Sidebar Drawer Overlay -->
+            <div id="adminDrawerSidebar" class="absolute top-[53px] left-0 bottom-0 w-64 bg-[#0D1016] border-r border-[#242B36] text-[#F5F7FA] z-30 shadow-2xl transform -translate-x-full transition-transform duration-200 flex flex-col p-3.5 space-y-2">
+                <div class="flex justify-between items-center border-b border-[#242B36] pb-2.5 mb-1 shrink-0">
+                    <span class="font-gaming text-xs font-bold text-[#FF6A1A] uppercase tracking-wider">Navigation</span>
+                    <button onclick="toggleAdminDrawerSidebar()" class="w-7 h-7 rounded-lg bg-[#171C25] text-[#A0A8B5] flex items-center justify-center"><i class="fa-solid fa-xmark text-xs"></i></button>
+                </div>
+                <div class="flex-grow overflow-y-auto space-y-1 pr-1 text-xs">
+                    <button onclick="openAdminDrawer(1); toggleAdminDrawerSidebar();" class="w-full text-left py-2.5 px-3 rounded-xl hover:bg-[#171C25] text-[#A0A8B5] hover:text-white font-semibold flex items-center space-x-2.5 transition"><i class="fa-solid fa-users w-4 text-[#FF6A1A]"></i><span>1. All Users</span></button>
+                    <button onclick="openAdminDrawer(10); toggleAdminDrawerSidebar();" class="w-full text-left py-2.5 px-3 rounded-xl hover:bg-[#171C25] text-[#A0A8B5] hover:text-white font-semibold flex items-center space-x-2.5 transition"><i class="fa-solid fa-gift w-4 text-[#35C98A]"></i><span>Login Bonus</span></button>
+                    <button onclick="openAdminDrawer(2); toggleAdminDrawerSidebar();" class="w-full text-left py-2.5 px-3 rounded-xl hover:bg-[#171C25] text-[#A0A8B5] hover:text-white font-semibold flex items-center space-x-2.5 transition"><i class="fa-solid fa-plus w-4 text-[#FF6A1A]"></i><span>2. Create Match</span></button>
+                    <button onclick="openAdminDrawer(3); toggleAdminDrawerSidebar();" class="w-full text-left py-2.5 px-3 rounded-xl hover:bg-[#171C25] text-[#A0A8B5] hover:text-white font-semibold flex items-center space-x-2.5 transition"><i class="fa-solid fa-trophy w-4 text-[#E8B04B]"></i><span>3. Manage Match & Winners</span></button>
+                    <button onclick="openAdminDrawer(4); toggleAdminDrawerSidebar();" class="w-full text-left py-2.5 px-3 rounded-xl hover:bg-[#171C25] text-[#A0A8B5] hover:text-white font-semibold flex items-center space-x-2.5 transition"><i class="fa-solid fa-qrcode w-4 text-[#FF6A1A]"></i><span>4. Website Settings & QR</span></button>
+                    <button onclick="openAdminDrawer(5); toggleAdminDrawerSidebar();" class="w-full text-left py-2.5 px-3 rounded-xl hover:bg-[#171C25] text-[#A0A8B5] hover:text-white font-semibold flex items-center space-x-2.5 transition"><i class="fa-solid fa-arrow-down w-4 text-[#35C98A]"></i><span>5. Deposit Requests</span></button>
+                    <button onclick="openAdminDrawer(6); toggleAdminDrawerSidebar();" class="w-full text-left py-2.5 px-3 rounded-xl hover:bg-[#171C25] text-[#A0A8B5] hover:text-white font-semibold flex items-center space-x-2.5 transition"><i class="fa-solid fa-arrow-up w-4 text-[#E8B04B]"></i><span>6. Withdrawal Requests</span></button>
+                    <button onclick="openAdminDrawer(7); toggleAdminDrawerSidebar();" class="w-full text-left py-2.5 px-3 rounded-xl hover:bg-[#171C25] text-[#A0A8B5] hover:text-white font-semibold flex items-center space-x-2.5 transition"><i class="fa-solid fa-camera w-4 text-[#FF6A1A]"></i><span>7. Result Proofs</span></button>
+                    <button onclick="openAdminDrawer(8); toggleAdminDrawerSidebar();" class="w-full text-left py-2.5 px-3 rounded-xl hover:bg-[#171C25] text-[#A0A8B5] hover:text-white font-semibold flex items-center space-x-2.5 transition"><i class="fa-solid fa-list-check w-4 text-[#FF6A1A]"></i><span>8. Joined Players</span></button>
+                    <button onclick="openAdminDrawer(9); toggleAdminDrawerSidebar();" class="w-full text-left py-2.5 px-3 rounded-xl hover:bg-[#171C25] text-[#A0A8B5] hover:text-white font-semibold flex items-center space-x-2.5 transition"><i class="fa-solid fa-key w-4 text-[#A0A8B5]"></i><span>9. Create Admin</span></button>
+                </div>
+            </div>
+
+            <!-- Main Drawer Content Area -->
+            <div id="adminDrawerContainer" class="flex-grow p-3.5 overflow-y-auto space-y-3.5"></div>
+        </div>
+    </div>
+
+
+    <!---------------- APPLICATION SCRIPT (100% FUNCTIONAL LOGIC PRESERVED) ---------------->
+    <script>
+        let currentUser = null;
+        let modalTimeout = null;
+        let globalRequests = {};
+        let globalTournaments = {};
+        let globalProofs = {};
+        let globalUsers = {};
+        let globalJoins = {};
+        let globalAdmins = {};
+        let globalSettings = { siteName: "BOOYAH ZONE", adminUpi: "booyahzone@upi" };
+        let globalQr = "";
+        let globalWhatsapp = "";
+        let currentFilter = 'all';
+        let currentTourneySection = 'upcoming';
+        let selectedMatchForSlot = null;
+        let selectedSlotKey = null;
+        let activeWithdrawQrBase64 = "";
+        let activeBonusTargetPhone = null;
+        window.activeAdminDrawer = 1;
+
+        window.addEventListener('firebase-ready', () => {
+            const { db, ref, onValue } = window.FB;
+
+            onValue(ref(db, 'requests'), (snapshot) => {
+                globalRequests = snapshot.val() || {};
+                if (document.getElementById('adminDashboardView') && !document.getElementById('adminDashboardView').classList.contains('hidden')) {
+                    if (window.activeAdminDrawer === 5) openAdminDrawer(5);
+                    if (window.activeAdminDrawer === 6) openAdminDrawer(6);
+                }
+            });
+
+            onValue(ref(db, 'tournaments'), (snapshot) => {
+                globalTournaments = snapshot.val() || {};
+                renderTournaments();
+                updatePlatformStats();
+                if (document.getElementById('adminDashboardView') && !document.getElementById('adminDashboardView').classList.contains('hidden')) {
+                    if (window.activeAdminDrawer === 3 || window.activeAdminDrawer === 8) openAdminDrawer(window.activeAdminDrawer);
+                }
+            });
+
+            onValue(ref(db, 'joins'), (snapshot) => {
+                globalJoins = snapshot.val() || {};
+                renderTournaments();
+                renderMyTournaments();
+                if (document.getElementById('adminDashboardView') && !document.getElementById('adminDashboardView').classList.contains('hidden')) {
+                    if (window.activeAdminDrawer === 3 || window.activeAdminDrawer === 8) openAdminDrawer(window.activeAdminDrawer);
+                }
+            });
+
+            onValue(ref(db, 'proofs'), (snapshot) => {
+                globalProofs = snapshot.val() || {};
+                if (document.getElementById('adminDashboardView') && !document.getElementById('adminDashboardView').classList.contains('hidden')) {
+                    if (window.activeAdminDrawer === 7) openAdminDrawer(7);
+                }
+            });
+
+            onValue(ref(db, 'qrCode'), (snapshot) => {
+                globalQr = snapshot.val() || "";
+                updateDisplayQr(globalQr);
+            });
+
+            onValue(ref(db, 'whatsappNumber'), (snapshot) => {
+                globalWhatsapp = snapshot.val() || "";
+            });
+
+            onValue(ref(db, 'settings'), (snapshot) => {
+                let s = snapshot.val();
+                if (s) {
+                    globalSettings = s;
+                    if (s.siteName) {
+                        document.getElementById('brandTitleDisplay').innerText = s.siteName;
+                        document.title = s.siteName + " - Esports Tournament Platform";
+                    }
+                    if (s.adminUpi) {
+                        let upiEl = document.getElementById('displayAdminUpi');
+                        if (upiEl) upiEl.innerText = "UPI ID: " + s.adminUpi;
+                    }
+                }
+            });
+
+            onValue(ref(db, 'users'), (snapshot) => {
+                globalUsers = snapshot.val() || {};
+                updatePlatformStats();
+                renderLeaderboard();
+                if (document.getElementById('adminDashboardView') && !document.getElementById('adminDashboardView').classList.contains('hidden')) {
+                    if (window.activeAdminDrawer === 1 || window.activeAdminDrawer === 10) openAdminDrawer(window.activeAdminDrawer);
+                }
+                const loggedPhone = localStorage.getItem('booyah_logged_phone');
+                if (loggedPhone && globalUsers[loggedPhone]) {
+                    currentUser = globalUsers[loggedPhone];
+                    if(currentUser.status === 'blocked') {
+                        showModal("Account Suspended", "Your account has been blocked by admin.", true);
+                        logout();
+                        return;
+                    }
+                    document.getElementById('authContainer').classList.add('hidden');
+                    document.getElementById('mainDashboard').classList.remove('hidden');
+                    updateUserUI();
+                    
+                    const savedTab = localStorage.getItem('booyah_active_tab') || 'home';
+                    switchTab(savedTab, false);
+                } else {
+                    document.getElementById('authContainer').classList.remove('hidden');
+                    document.getElementById('mainDashboard').classList.add('hidden');
+                }
+            });
+
+            onValue(ref(db, 'customAdmins'), (snapshot) => {
+                globalAdmins = snapshot.val() || {};
+                if (document.getElementById('adminDashboardView') && !document.getElementById('adminDashboardView').classList.contains('hidden')) {
+                    if (window.activeAdminDrawer === 9) openAdminDrawer(9);
+                }
+            });
+        });
+
+        function showModal(title, message, isError = true, autoCloseSec = 0) {
+            if (modalTimeout) clearTimeout(modalTimeout);
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('modalIcon').innerHTML = isError ? '<i class="fa-solid fa-circle-exclamation text-[#F05C64]"></i>' : '<i class="fa-solid fa-circle-check text-[#35C98A]"></i>';
+            document.getElementById('customModal').classList.remove('hidden');
+
+            if (autoCloseSec > 0) {
+                modalTimeout = setTimeout(() => { closeModal(); }, autoCloseSec * 1000);
+            }
+        }
+
+        function closeModal() {
+            if (modalTimeout) clearTimeout(modalTimeout);
+            document.getElementById('customModal').classList.add('hidden');
+        }
+
+        function previewWithdrawQr(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    activeWithdrawQrBase64 = e.target.result;
+                    const thumbContainer = document.getElementById('withdrawQrThumbContainer');
+                    const thumbImg = document.getElementById('withdrawQrThumbImg');
+                    if (thumbContainer && thumbImg) {
+                        thumbImg.src = activeWithdrawQrBase64;
+                        thumbContainer.classList.remove('hidden');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function openQrPreviewModal() {
+            if (!activeWithdrawQrBase64) return;
+            document.getElementById('enlargedQrImg').src = activeWithdrawQrBase64;
+            document.getElementById('qrPreviewModal').classList.remove('hidden');
+        }
+
+        function closeQrPreviewModal() {
+            document.getElementById('qrPreviewModal').classList.add('hidden');
+        }
+
+        function switchAuthTab(tab) {
+            const loginBtn = document.getElementById('tabLoginBtn');
+            const regBtn = document.getElementById('tabRegisterBtn');
+            const loginCard = document.getElementById('loginFormCard');
+            const regCard = document.getElementById('registerFormCard');
+
+            if (tab === 'login') {
+                loginBtn.className = "flex-1 py-2.5 font-gaming text-xs font-bold rounded-lg bg-[#FF6A1A] text-white transition shadow-sm";
+                regBtn.className = "flex-1 py-2.5 font-gaming text-xs font-bold rounded-lg text-[#A0A8B5] hover:text-white transition";
+                loginCard.classList.remove('hidden');
+                regCard.classList.add('hidden');
+            } else {
+                regBtn.className = "flex-1 py-2.5 font-gaming text-xs font-bold rounded-lg bg-[#FF6A1A] text-white transition shadow-sm";
+                loginBtn.className = "flex-1 py-2.5 font-gaming text-xs font-bold rounded-lg text-[#A0A8B5] hover:text-white transition";
+                regCard.classList.remove('hidden');
+                loginCard.classList.add('hidden');
+            }
+        }
+
+        function switchTab(tab, saveState = true) {
+            if (saveState) {
+                localStorage.setItem('booyah_active_tab', tab);
+            }
+            const tabs = ['home', 'tournaments', 'myTournaments', 'results', 'wallet', 'profile'];
+            tabs.forEach(t => {
+                const tabEl = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+                let navId = t === 'myTournaments' ? 'navBtnMyTournaments' : ('navBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+                const navEl = document.getElementById(navId);
+                if (tabEl) tabEl.classList.add('hidden');
+                if (navEl) navEl.className = "flex flex-col items-center text-[#737D8B] hover:text-[#F5F7FA] transition py-0.5 px-2";
+            });
+
+            let activeTabId = 'tab' + tab.charAt(0).toUpperCase() + tab.slice(1);
+            let activeNavId = tab === 'myTournaments' ? 'navBtnMyTournaments' : ('navBtn' + tab.charAt(0).toUpperCase() + tab.slice(1));
+
+            const activeTab = document.getElementById(activeTabId);
+            const activeNav = document.getElementById(activeNavId);
+            if (activeTab) activeTab.classList.remove('hidden');
+            if (activeNav) activeNav.className = "flex flex-col items-center text-[#FF6A1A] transition py-0.5 px-2";
+
+            if(tab === 'tournaments' || tab === 'home') { renderTournaments(); }
+            if(tab === 'myTournaments') { renderMyTournaments(); }
+            if(tab === 'wallet') { updateUserUI(); }
+            if(tab === 'profile') { renderLeaderboard(); }
+        }
+
+        function selectHomeCategory(category) {
+            switchTab('tournaments');
+            filterTournaments(category);
+        }
+
+        function switchTourneySection(sec) {
+            currentTourneySection = sec;
+            const btnUp = document.getElementById('secUpcomingBtn');
+            const btnLive = document.getElementById('secLiveBtn');
+            const btnRes = document.getElementById('secResultsBtn');
+
+            btnUp.className = "flex-1 py-2 font-gaming text-[11px] font-bold rounded-lg text-[#A0A8B5] transition";
+            btnLive.className = "flex-1 py-2 font-gaming text-[11px] font-bold rounded-lg text-[#A0A8B5] transition";
+            btnRes.className = "flex-1 py-2 font-gaming text-[11px] font-bold rounded-lg text-[#A0A8B5] transition";
+
+            if (sec === 'upcoming') btnUp.className = "flex-1 py-2 font-gaming text-[11px] font-bold rounded-lg bg-[#FF6A1A] text-white transition shadow-sm";
+            if (sec === 'live') btnLive.className = "flex-1 py-2 font-gaming text-[11px] font-bold rounded-lg bg-[#FF6A1A] text-white transition shadow-sm";
+            if (sec === 'results') btnRes.className = "flex-1 py-2 font-gaming text-[11px] font-bold rounded-lg bg-[#FF6A1A] text-white transition shadow-sm";
+
+            renderTournaments();
+        }
+
+        function openWhatsAppSupport() {
+            if (!globalWhatsapp) {
+                showModal("Support", "WhatsApp support number is not configured by admin yet.", true, 2);
+                return;
+            }
+            let cleanNum = globalWhatsapp.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/${cleanNum}?text=Hello%20Booyah%20Zone%20Support,%20I%20need%20help!`, '_blank');
+        }
+
+        function handleRegister() {
+            const username = document.getElementById('regUsername').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const uid = document.getElementById('regUid').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
+            const inviteCodeInput = document.getElementById('regInviteCode').value.trim().toUpperCase();
+
+            if (!username || !phone || !email || !uid || !pass) {
+                showModal("Error", "Please fill in all registration fields.", true);
+                return;
+            }
+
+            if (globalUsers[phone]) {
+                showModal("Already Registered", "Number already registered! Please login.", true);
+                switchAuthTab('login');
+                return;
+            }
+
+            let uidExists = false;
+            Object.keys(globalUsers).forEach(ph => {
+                if(globalUsers[ph].uid === uid) uidExists = true;
+            });
+            if (uidExists) {
+                showModal("Error", "This Free Fire UID is already registered with another account.", true);
+                return;
+            }
+
+            let ownInviteCode = "BOOYAH-" + uid;
+            let usedInviteCode = "";
+
+            if (inviteCodeInput) {
+                if (inviteCodeInput === ownInviteCode) {
+                    showModal("Error", "You cannot use your own invite code (self-referral is not allowed).", true);
+                    return;
+                }
+
+                let validInvite = false;
+                Object.keys(globalUsers).forEach(ph => {
+                    let u = globalUsers[ph];
+                    let uCode = "BOOYAH-" + u.uid;
+                    if (uCode === inviteCodeInput) {
+                        validInvite = true;
+                    }
+                });
+
+                if (!validInvite) {
+                    showModal("Invalid Code", "The invite code entered does not exist.", true);
+                    return;
+                }
+                usedInviteCode = inviteCodeInput;
+            }
+
+            const newUser = { 
+                username, 
+                phone, 
+                email, 
+                uid, 
+                pass, 
+                ownInviteCode, 
+                inviteCodeUsed: usedInviteCode, 
+                balance: 0, 
+                totalWon: 0, 
+                upiId: '', 
+                status: 'active', 
+                history: [] 
+            };
+
+            window.FB.set(window.FB.ref(window.FB.db, 'users/' + phone), newUser).then(() => {
+                showModal("Registration Success", "Account created successfully! You can login now.", false, 2);
+                switchAuthTab('login');
+            });
+        }
+
+        function handleLogin() {
+            const loginKey = document.getElementById('loginPhone').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+
+            if (!loginKey || !pass) {
+                showModal("Error", "Please enter credentials.", true);
+                return;
+            }
+
+            let foundUser = null;
+            Object.keys(globalUsers).forEach(ph => {
+                let u = globalUsers[ph];
+                if (u.phone === loginKey || u.username === loginKey) {
+                    foundUser = u;
+                }
+            });
+
+            if (!foundUser) {
+                showModal("Not Found", "User not found. Please register first.", true);
+                switchAuthTab('register');
+                return;
+            }
+
+            if (foundUser.status === 'blocked') {
+                showModal("Blocked", "Your account has been blocked by admin.", true);
+                return;
+            }
+
+            if (foundUser.pass !== pass) {
+                showModal("Wrong Password", "Incorrect password entered!", true);
+                return;
+            }
+
+            currentUser = foundUser;
+            localStorage.setItem('booyah_logged_phone', currentUser.phone);
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            
+            updateUserUI();
+            showModal("Login Success", "Welcome to FF Battle Arena!", false, 2);
+            switchTab('home');
+        }
+
+        function updateUserUI() {
+            if(!currentUser) return;
+            if(globalUsers[currentUser.phone]) {
+                currentUser = globalUsers[currentUser.phone];
+            }
+
+            document.getElementById('userUidDisplay').innerText = "UID: " + currentUser.uid;
+            document.getElementById('walletBalanceDisplay').innerText = "₹" + (currentUser.balance || 0);
+            document.getElementById('walletPageBalance').innerText = "₹" + (currentUser.balance || 0);
+            
+            let myCode = currentUser.ownInviteCode || ("BOOYAH-" + currentUser.uid);
+            document.getElementById('myReferralCode').innerText = myCode;
+            
+            document.getElementById('profileUsernameInput').value = currentUser.username || "";
+            document.getElementById('profileEmailInput').value = currentUser.email || "";
+            document.getElementById('profileUpiInput').value = currentUser.upiId || "";
+
+            let totalDep = 0;
+            let totalWith = 0;
+            if (currentUser.history) {
+                currentUser.history.forEach(h => {
+                    if (h.desc.includes('Deposit') && (h.status.includes('Succeed') || h.status.includes('COMPLETE'))) {
+                        let val = parseFloat(h.desc.replace(/[^0-9.]/g, '')) || 0;
+                        totalDep += val;
+                    }
+                    if (h.desc.includes('Withdraw') && (h.status.includes('Succeed') || h.status.includes('COMPLETE'))) {
+                        let val = parseFloat(h.desc.replace(/[^0-9.]/g, '')) || 0;
+                        totalWith += val;
+                    }
+                });
+            }
+            document.getElementById('totalDepositsDisplay').innerText = "₹" + totalDep;
+            document.getElementById('totalWithdrawalsDisplay').innerText = "₹" + totalWith;
+
+            renderTransactionHistory();
+            renderLeaderboard();
+        }
+
+        function saveProfileChanges() {
+            if (!currentUser) return;
+            currentUser.username = document.getElementById('profileUsernameInput').value.trim();
+            currentUser.email = document.getElementById('profileEmailInput').value.trim();
+            currentUser.upiId = document.getElementById('profileUpiInput').value.trim();
+            saveUserSession();
+            updateUserUI();
+            showModal("Success", "Profile updated successfully!", false, 2);
+        }
+
+        function renderLeaderboard() {
+            let usersArray = Object.keys(globalUsers).map(phone => {
+                let u = globalUsers[phone];
+                return { phone: u.phone, uid: u.uid, username: u.username, totalWon: u.totalWon || 0 };
+            });
+
+            usersArray.sort((a, b) => b.totalWon - a.totalWon);
+
+            let podiumEl = document.getElementById('podiumLeaderboard');
+            let restEl = document.getElementById('restLeaderboard');
+            if (!podiumEl || !restEl) return;
+
+            let rank1 = usersArray[0] || { uid: '---', username: '---', totalWon: 0 };
+            let rank2 = usersArray[1] || { uid: '---', username: '---', totalWon: 0 };
+            let rank3 = usersArray[2] || { uid: '---', username: '---', totalWon: 0 };
+
+            podiumEl.innerHTML = `
+                <div class="bg-[#0D1016] p-2.5 rounded-xl border border-[#242B36] text-center flex flex-col justify-between overflow-hidden">
+                    <div class="overflow-hidden">
+                        <span class="text-[9px] font-gaming bg-[#171C25] text-[#A0A8B5] px-1.5 py-0.5 rounded font-bold">2ND</span>
+                        <p class="font-gaming text-[11px] text-[#F5F7FA] font-bold mt-1.5 truncate">${rank2.username}</p>
+                    </div>
+                    <p class="text-[10px] text-[#35C98A] font-gaming font-bold mt-1 truncate">₹${rank2.totalWon}</p>
+                </div>
+                <div class="hero-ambient p-2.5 rounded-xl text-center flex flex-col justify-between transform -translate-y-1 overflow-hidden">
+                    <div class="overflow-hidden">
+                        <span class="text-[9px] font-gaming bg-[#FF6A1A] text-white px-2 py-0.5 rounded font-extrabold"><i class="fa-solid fa-crown mr-0.5"></i> 1ST</span>
+                        <p class="font-gaming text-xs text-[#F5F7FA] font-extrabold mt-1.5 truncate">${rank1.username}</p>
+                    </div>
+                    <p class="text-[11px] text-[#E8B04B] font-gaming font-extrabold mt-1 truncate">₹${rank1.totalWon}</p>
+                </div>
+                <div class="bg-[#0D1016] p-2.5 rounded-xl border border-[#242B36] text-center flex flex-col justify-between overflow-hidden">
+                    <div class="overflow-hidden">
+                        <span class="text-[9px] font-gaming bg-[#171C25] text-[#A0A8B5] px-1.5 py-0.5 rounded font-bold">3RD</span>
+                        <p class="font-gaming text-[11px] text-[#F5F7FA] font-bold mt-1.5 truncate">${rank3.username}</p>
+                    </div>
+                    <p class="text-[10px] text-[#35C98A] font-gaming font-bold mt-1 truncate">₹${rank3.totalWon}</p>
+                </div>
+            `;
+
+            let restUsers = usersArray.slice(3, 13);
+            let restHtml = "";
+            if (restUsers.length === 0) {
+                restHtml = `<p class="text-[#737D8B] text-[11px] text-center py-2">No additional rankings available.</p>`;
+            } else {
+                restUsers.forEach((u, index) => {
+                    let rankNum = index + 4;
+                    restHtml += `
+                        <div class="flex justify-between items-center bg-[#0D1016] px-3 py-2 rounded-xl text-xs border border-[#242B36]">
+                            <div class="flex items-center space-x-2 overflow-hidden">
+                                <span class="font-gaming font-bold text-[#737D8B] text-[10px] w-5 shrink-0">#${rankNum}</span>
+                                <span class="text-[#F5F7FA] font-semibold truncate text-[11px]">${u.username} <span class="text-[#737D8B]">(${u.uid})</span></span>
+                            </div>
+                            <span class="font-gaming font-bold text-[#35C98A] text-[11px] shrink-0 ml-2">₹${u.totalWon}</span>
+                        </div>
+                    `;
+                });
+            }
+            restEl.innerHTML = restHtml;
+        }
+
+        function copyReferralCode() {
+            const code = currentUser.ownInviteCode || ("BOOYAH-" + currentUser.uid);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).catch(() => {});
+            } else {
+                const tempInput = document.createElement("input");
+                tempInput.value = code;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand("copy");
+                document.body.removeChild(tempInput);
+            }
+            showModal("Copied!", "Referral code copied to clipboard.", false, 2);
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('booyah_logged_phone');
+            localStorage.removeItem('booyah_active_tab');
+            document.getElementById('mainDashboard').classList.add('hidden');
+            document.getElementById('authContainer').classList.remove('hidden');
+            switchAuthTab('login');
+            showModal("Logged Out", "You have been securely logged out.", false, 2);
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+            document.getElementById('adminLoginView').classList.remove('hidden');
+            document.getElementById('adminDashboardView').classList.add('hidden');
+            document.getElementById('adminPassInput').value = "";
+        }
+
+        function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
+        function logoutAdmin() { closeAdminModal(); switchTab('home'); }
+
+        function verifyAdminLogin() {
+            const passkey = document.getElementById('adminPassInput').value.trim();
+            let isValid = (passkey === "yash2600");
+            if (!isValid) {
+                Object.keys(globalAdmins).forEach(k => {
+                    if (globalAdmins[k].password === passkey) isValid = true;
+                });
+            }
+
+            if (isValid) {
+                showModal("Access Granted", "Admin Panel unlocked.", false, 2);
+                document.getElementById('adminLoginView').classList.add('hidden');
+                document.getElementById('adminDashboardView').classList.remove('hidden');
+                openAdminDrawer(1);
+            } else {
+                showModal("Access Denied", "Incorrect Admin Password!", true, 2);
+            }
+        }
+
+        function toggleAdminDrawerSidebar() {
+            const sidebar = document.getElementById('adminDrawerSidebar');
+            if (sidebar) sidebar.classList.toggle('-translate-x-full');
+        }
+
+        function openAdminDrawer(drawerNum) {
+            window.activeAdminDrawer = drawerNum;
+            const container = document.getElementById('adminDrawerContainer');
+
+            if (drawerNum === 1) {
+                let userCount = Object.keys(globalUsers).length;
+                let html = `
+                    <div class="hero-ambient rounded-2xl p-3.5 flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] text-[#A0A8B5] font-semibold uppercase tracking-wider">Registered Players</p>
+                            <h3 class="font-gaming text-2xl font-black text-[#F5F7FA] mt-0.5">${userCount}</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-[#FF6A1A]/15 border border-[#FF6A1A]/30 flex items-center justify-center text-[#FF6A1A]">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="esports-surface rounded-2xl p-3.5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase">Player Directory & Balances</h4>
+                        </div>
+                        <input type="text" id="userSearchInput" onkeyup="filterAdminUsers()" placeholder="Search Username or UID..." class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                        <div id="adminUserListContainer" class="space-y-2.5 max-h-[60vh] overflow-y-auto pr-1">
+                `;
+                Object.keys(globalUsers).forEach(phone => {
+                    let u = globalUsers[phone];
+                    let isBlocked = u.status === 'blocked';
+                    let ownCode = u.ownInviteCode || ("BOOYAH-" + u.uid);
+                    let usedCode = u.inviteCodeUsed || "None";
+                    html += `
+                        <div class="user-card bg-[#0D1016] p-3 rounded-xl text-xs space-y-2 border border-[#242B36]" data-uid="${u.uid}" data-username="${u.username}">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[#F5F7FA] font-bold truncate text-xs">${u.username} <span class="text-[#737D8B] font-normal">(${u.phone})</span></span>
+                                <span class="${isBlocked ? 'bg-[#F05C64]/15 text-[#F05C64]' : 'bg-[#35C98A]/15 text-[#35C98A]'} px-2 py-0.5 rounded font-bold text-[9px] uppercase">${u.status || 'active'}</span>
+                            </div>
+                            <div class="text-[10px] text-[#A0A8B5] space-y-1 bg-[#11151D] p-2.5 rounded-lg border border-[#242B36]">
+                                <p>UID: <b class="text-[#F5F7FA]">${u.uid}</b></p>
+                                <p>Own Invite Code: <b class="text-[#FF8B3D]">${ownCode}</b></p>
+                                <p>Invite Code Used: <b class="text-[#F5F7FA]">${usedCode}</b></p>
+                            </div>
+                            <div class="flex items-center justify-between gap-2 pt-0.5">
+                                <div class="flex items-center space-x-1.5">
+                                    <span class="text-[11px] text-[#A0A8B5] font-bold">₹</span>
+                                    <input type="number" id="edit_user_bal_${phone}" value="${u.balance || 0}" class="esports-input w-20 rounded-lg px-2 py-1 text-xs font-bold text-[#35C98A]">
+                                    <button onclick="updateUserBalanceAdmin('${phone}')" class="btn-primary-orange px-2.5 py-1 rounded-lg text-[10px] font-gaming font-bold shrink-0">SAVE</button>
+                                </div>
+                                <div class="flex space-x-1.5">
+                                    <button onclick="toggleBlockUser('${phone}')" class="${isBlocked ? 'bg-[#35C98A]/20 text-[#35C98A]' : 'bg-[#E8B04B]/20 text-[#E8B04B]'} px-2.5 py-1 rounded-lg text-[10px] font-bold transition">${isBlocked ? 'Unblock' : 'Block'}</button>
+                                    <button onclick="deleteUser('${phone}')" class="bg-[#F05C64]/20 text-[#F05C64] hover:bg-[#F05C64] hover:text-white px-2.5 py-1 rounded-lg text-[10px] font-bold transition">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+                container.innerHTML = html;
+            } else if (drawerNum === 10) {
+                let html = `
+                    <div class="esports-surface rounded-2xl p-3.5 space-y-3 text-xs">
+                        <div class="border-b border-[#242B36] pb-2.5">
+                            <h4 class="font-gaming text-xs font-bold text-[#FF6A1A] uppercase">Login Bonus Distribution</h4>
+                            <p class="text-[11px] text-[#737D8B] mt-0.5">Manually credit bonus funds to registered players.</p>
+                        </div>
+                        <div class="space-y-2.5 max-h-[68vh] overflow-y-auto pr-1">
+                `;
+                let idx = 1;
+                Object.keys(globalUsers).forEach(phone => {
+                    let u = globalUsers[phone];
+                    let ownCode = u.ownInviteCode || ("BOOYAH-" + u.uid);
+                    let usedCode = u.inviteCodeUsed || "None";
+                    html += `
+                        <div class="bg-[#0D1016] p-3 rounded-xl border border-[#242B36] space-y-2">
+                            <div class="flex justify-between items-center text-xs font-bold text-[#F5F7FA]">
+                                <span>#${idx} · ${u.username}</span>
+                                <span class="text-[#FF8B3D] font-gaming text-[11px]">UID: ${u.uid}</span>
+                            </div>
+                            <div class="text-[10px] text-[#A0A8B5] space-y-0.5 bg-[#11151D] p-2.5 rounded-lg border border-[#242B36]">
+                                <p>Own Invite Code: <b class="text-[#FF8B3D]">${ownCode}</b></p>
+                                <p>Invite Code Used: <b class="text-[#F5F7FA]">${usedCode}</b></p>
+                                <p>Wallet Balance: <b class="text-[#35C98A]">₹${u.balance || 0}</b></p>
+                            </div>
+                            <button onclick="openGiveBonusModal('${phone}', '${encodeURIComponent(u.username || '')}', '${u.uid}')" class="w-full btn-primary-orange font-gaming py-2 rounded-xl font-bold text-[11px] uppercase tracking-wider">GIVE BONUS</button>
+                        </div>
+                    `;
+                    idx++;
+                });
+                html += `</div></div>`;
+                container.innerHTML = html;
+            } else if (drawerNum === 2) {
+                container.innerHTML = `
+                    <div class="esports-surface rounded-2xl p-4 space-y-3 text-xs">
+                        <h4 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase border-b border-[#242B36] pb-2.5">Create New Tournament</h4>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Tournament Title</label>
+                            <input type="text" id="adminTrName" placeholder="e.g., BR Bermuda Solo" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Category</label>
+                                <select id="adminTrCategory" class="esports-input w-full rounded-xl px-2.5 py-2 text-xs">
+                                    <option value="BR Map">BR Map</option>
+                                    <option value="CS Map">CS Map</option>
+                                    <option value="LW Map">LW Map</option>
+                                    <option value="Free Custom">Free Custom</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Slot Format</label>
+                                <select id="adminTrMode" class="esports-input w-full rounded-xl px-2.5 py-2 text-xs">
+                                    <option value="Solo">Solo Map (48 Slots)</option>
+                                    <option value="Duo">Duo Map (Team A & B)</option>
+                                    <option value="Squad">Squad Map (12 Teams)</option>
+                                    <option value="1v1">1v1 Match</option>
+                                    <option value="2v2">2v2 Match</option>
+                                    <option value="4v4">4v4 Match</option>
+                                    <option value="6v6">6v6 Match</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Entry Fee (₹)</label>
+                                <input type="number" id="adminTrFee" placeholder="0" class="esports-input w-full rounded-xl px-2.5 py-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Prize Pool (₹)</label>
+                                <input type="number" id="adminTrPrize" placeholder="0" class="esports-input w-full rounded-xl px-2.5 py-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Per Kill (₹)</label>
+                                <input type="number" id="adminTrPerKill" placeholder="0" class="esports-input w-full rounded-xl px-2.5 py-2 text-xs">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Schedule Date & Time</label>
+                            <input type="text" id="adminTrTime" placeholder="e.g., Today 8:00 PM" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Room ID & Password</label>
+                            <input type="text" id="adminTrRoomId" placeholder="Room ID & Pass" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-[#A0A8B5] mb-1">Match Rules / Notes</label>
+                            <textarea id="adminTrDesc" placeholder="Tournament rules and instructions..." class="esports-input w-full rounded-xl px-3 py-2 h-16 text-xs"></textarea>
+                        </div>
+                        <button onclick="adminCreateTournament()" class="w-full btn-primary-orange font-gaming font-bold py-3 rounded-xl text-xs uppercase tracking-wider">PUBLISH MATCH</button>
+                    </div>
+                `;
+            } else if (drawerNum === 3) {
+                let html = `<div class="esports-surface rounded-2xl p-3.5 space-y-3 text-xs"><h4 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase border-b border-[#242B36] pb-2.5">Manage Tournaments & Winners</h4><div class="space-y-3.5 max-h-[72vh] overflow-y-auto pr-1">`;
+                let tKeys = Object.keys(globalTournaments);
+                if (tKeys.length === 0) {
+                    html += `<p class="text-[#737D8B] text-xs py-4 text-center">No tournaments found.</p>`;
+                } else {
+                    tKeys.forEach(tKey => {
+                        let t = globalTournaments[tKey];
+                        let status = t.status || 'upcoming';
+                        html += `
+                            <div class="bg-[#0D1016] p-3 rounded-xl space-y-2.5 border border-[#242B36] text-xs">
+                                <div class="flex justify-between items-center">
+                                    <div class="overflow-hidden pr-2">
+                                        <span class="text-[#F5F7FA] font-bold truncate block text-xs">${t.name}</span>
+                                        <span class="text-[10px] text-[#E8B04B] font-gaming">Prize: ₹${t.prize} · <span class="uppercase text-[#FF6A1A]">${status}</span></span>
+                                    </div>
+                                    <button onclick="deleteTournament('${tKey}')" class="bg-[#F05C64]/15 text-[#F05C64] hover:bg-[#F05C64] hover:text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shrink-0 transition">DELETE</button>
+                                </div>
+                                
+                                <div class="space-y-2 bg-[#11151D] p-2.5 rounded-xl border border-[#242B36]">
+                                    <p class="text-[10px] text-[#FF8B3D] font-bold uppercase"><i class="fa-solid fa-pen-to-square mr-1"></i> Quick Edit Match & Room Details</p>
+                                    <div class="grid grid-cols-2 gap-1.5">
+                                        <input type="text" id="edit_name_${tKey}" value="${t.name}" placeholder="Name" class="esports-input rounded-lg px-2 py-1.5 text-[11px]">
+                                        <input type="text" id="edit_time_${tKey}" value="${t.time}" placeholder="Time" class="esports-input rounded-lg px-2 py-1.5 text-[11px]">
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-1.5">
+                                        <input type="number" id="edit_fee_${tKey}" value="${t.fee}" placeholder="Fee" class="esports-input rounded-lg px-2 py-1.5 text-[11px]">
+                                        <input type="number" id="edit_prize_${tKey}" value="${t.prize}" placeholder="Prize" class="esports-input rounded-lg px-2 py-1.5 text-[11px]">
+                                        <input type="number" id="edit_perkill_${tKey}" value="${t.perKill || 0}" placeholder="Per Kill" class="esports-input rounded-lg px-2 py-1.5 text-[11px]">
+                                    </div>
+                                    <input type="text" id="edit_room_${tKey}" value="${t.roomInfo || ''}" placeholder="Room ID & Password" class="esports-input w-full rounded-lg px-2 py-1.5 text-[11px] font-bold text-[#E8B04B]">
+                                    <textarea id="edit_desc_${tKey}" placeholder="Description" class="esports-input w-full rounded-lg px-2 py-1.5 text-[11px] h-10">${t.desc || ''}</textarea>
+                                    <button onclick="saveTournamentEdits('${tKey}')" class="w-full btn-secondary-dark hover:border-[#FF6A1A] py-1.5 rounded-lg font-gaming font-bold text-[10px] text-[#35C98A]">SAVE CHANGES TO DATABASE</button>
+                                </div>
+
+                                <div class="flex space-x-2 pt-0.5">
+                                    ${status === 'upcoming' ? `<button onclick="confirmAndUpdateMatchStatus('${tKey}', 'live')" class="flex-1 btn-primary-orange py-2 rounded-xl font-gaming text-[10px] font-bold">START MATCH / GO LIVE</button>` : (status === 'live' ? `<button onclick="confirmAndUpdateMatchStatus('${tKey}', 'completed')" class="flex-1 bg-[#35C98A] text-[#08090C] py-2 rounded-xl font-gaming text-[10px] font-bold">COMPLETE & FINISH</button>` : `<button onclick="removeCompletedResult('${tKey}')" class="flex-1 bg-[#F05C64] text-white py-2 rounded-xl font-gaming text-[10px] font-bold">REMOVE RESULT</button>`)}
+                                </div>
+
+                                <div class="space-y-1.5 bg-[#11151D] p-2.5 rounded-xl border border-[#242B36]">
+                                    <p class="text-[10px] text-[#A0A8B5] font-semibold">Joined Players & Payout:</p>
+                        `;
+                        let joined = globalJoins[tKey];
+                        if (joined) {
+                            Object.keys(joined).forEach(phone => {
+                                let j = joined[phone];
+                                html += `
+                                    <div class="flex justify-between items-center gap-2 border-b border-[#242B36] pb-1.5 pt-1">
+                                        <span class="text-[#F5F7FA] truncate text-[10px]">UID: <b>${j.uid}</b> <span class="text-[#737D8B]">(${j.slotName || 'N/A'})</span></span>
+                                        <div class="flex space-x-1 items-center shrink-0">
+                                            <input type="number" id="kills_${tKey}_${phone}" placeholder="Kills" class="esports-input w-12 rounded px-1.5 py-1 text-[10px]">
+                                            <button onclick="declareWinnerWithKills('${tKey}', '${phone}', '${j.uid}', ${t.prize}, ${t.perKill || 0}, '${t.name}')" class="bg-[#35C98A] text-[#08090C] px-2 py-1 rounded text-[9px] font-gaming font-bold shrink-0">PAY</button>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            html += `<p class="text-[#737D8B] text-[10px]">No players joined yet.</p>`;
+                        }
+                        html += `</div></div>`;
+                    });
+                }
+                html += `</div></div>`;
+                container.innerHTML = html;
+            } else if (drawerNum === 4) {
+                container.innerHTML = `
+                    <div class="esports-surface rounded-2xl p-4 space-y-3.5 text-center text-xs">
+                        <h4 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase border-b border-[#242B36] pb-2.5 text-left">Platform Settings & Payment QR</h4>
+                        <div class="w-32 h-32 mx-auto bg-[#0D1016] rounded-2xl overflow-hidden border border-[#242B36] flex items-center justify-center">
+                            ${globalQr ? `<img src="${globalQr}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-qrcode text-4xl text-[#737D8B]"></i>`}
+                        </div>
+                        <input type="file" id="adminQrUpload" accept="image/*" class="w-full text-[11px] text-[#A0A8B5] file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#171C25] file:text-[#F5F7FA] cursor-pointer">
+                        <button onclick="saveAdminQr()" class="w-full btn-secondary-dark hover:border-[#FF6A1A] font-gaming font-bold py-2.5 rounded-xl text-xs">UPDATE DEPOSIT QR</button>
+                        
+                        <hr class="border-[#242B36]">
+
+                        <div class="space-y-2.5 text-left">
+                            <div>
+                                <label class="block text-[10px] text-[#A0A8B5] font-semibold mb-1">PLATFORM BRAND NAME</label>
+                                <input type="text" id="adminSiteNameInput" value="${globalSettings.siteName || 'BOOYAH ZONE'}" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-[#A0A8B5] font-semibold mb-1">ADMIN RECEIVING UPI ID</label>
+                                <input type="text" id="adminUpiInput" value="${globalSettings.adminUpi || 'booyahzone@upi'}" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-[#A0A8B5] font-semibold mb-1">WHATSAPP SUPPORT NUMBER</label>
+                                <input type="text" id="adminWhatsappInput" value="${globalWhatsapp}" placeholder="e.g., 919876543210" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                            </div>
+                            <button onclick="saveWebsiteSettings()" class="w-full btn-primary-orange font-gaming font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider mt-1">SAVE SETTINGS</button>
+                        </div>
+                    </div>
+                `;
+            } else if (drawerNum === 5) {
+                let html = `<div class="esports-surface rounded-2xl p-3.5 space-y-3 text-xs"><h4 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase border-b border-[#242B36] pb-2.5">Pending Deposit Requests</h4><div class="space-y-2.5 max-h-[68vh] overflow-y-auto pr-1">`;
+                let pendingKeys = Object.keys(globalRequests).filter(k => globalRequests[k].status === 'pending' && globalRequests[k].type === 'deposit');
+                if (pendingKeys.length === 0) {
+                    html += `<p class="text-[#737D8B] text-xs py-4 text-center">No pending deposit requests.</p>`;
+                } else {
+                    pendingKeys.forEach(key => {
+                        let r = globalRequests[key];
+                        html += `
+                            <div class="bg-[#0D1016] p-3 rounded-xl space-y-2.5 border border-[#242B36] text-xs">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[#F5F7FA] font-bold truncate text-xs">UID: ${r.uid}</span>
+                                    <span class="text-[10px] text-[#E8B04B] font-mono">UTR: ${r.utr}</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[#A0A8B5] font-bold">₹</span>
+                                    <input type="number" id="edit_dep_amt_${key}" value="${r.amt}" class="esports-input w-full rounded-lg px-2.5 py-1.5 text-xs font-bold text-[#35C98A]">
+                                </div>
+                                <div class="flex space-x-2 pt-0.5">
+                                    <button onclick="handleAdminDepositRequest('${key}', 'accept')" class="flex-1 bg-[#35C98A] text-[#08090C] py-1.5 rounded-lg font-gaming text-[10px] font-bold">APPROVE</button>
+                                    <button onclick="handleAdminRequest('${key}', 'reject')" class="flex-1 bg-[#F05C64]/20 text-[#F05C64] hover:bg-[#F05C64] hover:text-white py-1.5 rounded-lg font-gaming text-[10px] font-bold transition">REJECT</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div></div>`;
+                container.innerHTML = html;
+            } else if (drawerNum === 6) {
+                let html = `<div class="esports-surface rounded-2xl p-3.5 space-y-3 text-xs"><h4 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase border-b border-[#242B36] pb-2.5">Pending Withdrawal Requests</h4><div class="space-y-2.5 max-h-[68vh] overflow-y-auto pr-1">`;
+                let pendingKeys = Object.keys(globalRequests).filter(k => globalRequests[k].status === 'pending' && globalRequests[k].type === 'withdraw');
+                if (pendingKeys.length === 0) {
+                    html += `<p class="text-[#737D8B] text-xs py-4 text-center">No pending withdrawal requests.</p>`;
+                } else {
+                    pendingKeys.forEach(key => {
+                        let r = globalRequests[key];
+                        html += `
+                            <div class="bg-[#0D1016] p-3 rounded-xl space-y-2 border border-[#242B36] text-xs">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="text-[#F5F7FA] font-bold text-xs">₹${r.amt} <span class="text-[#737D8B] font-normal">· UID ${r.uid}</span></p>
+                                        <p class="text-[10px] text-[#FF8B3D] truncate mt-0.5">UPI: ${r.upi}</p>
+                                    </div>
+                                    ${r.qrImg ? `<div class="w-12 h-12 rounded-lg overflow-hidden border border-[#242B36] shrink-0"><img src="${r.qrImg}" class="w-full h-full object-cover"></div>` : ''}
+                                </div>
+                                <div class="flex space-x-2 pt-1">
+                                    <button onclick="handleAdminRequest('${key}', 'accept')" class="flex-1 bg-[#35C98A] text-[#08090C] py-1.5 rounded-lg font-gaming text-[10px] font-bold">COMPLETE</button>
+                                    <button onclick="handleAdminRequest('${key}', 'reject')" class="flex-1 bg-[#F05C64]/20 text-[#F05C64] hover:bg-[#F05C64] hover:text-white py-1.5 rounded-lg font-gaming text-[10px] font-bold transition">REJECT</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div></div>`;
+                container.innerHTML = html;
+            } else if (drawerNum === 7) {
+                let html = `<div class="esports-surface rounded-2xl p-3.5 space-y-3 text-xs"><h4 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase border-b border-[#242B36] pb-2.5">Submitted Result Proofs</h4><div class="space-y-2.5 max-h-[68vh] overflow-y-auto pr-1">`;
+                let pKeys = Object.keys(globalProofs);
+                if (pKeys.length === 0) {
+                    html += `<p class="text-[#737D8B] text-xs py-4 text-center">No result proofs submitted.</p>`;
+                } else {
+                    pKeys.forEach(key => {
+                        let p = globalProofs[key];
+                        html += `
+                            <div class="bg-[#0D1016] p-3 rounded-xl space-y-2 border border-[#242B36] text-xs">
+                                <div class="flex justify-between items-start gap-2">
+                                    <div class="overflow-hidden">
+                                        <p class="text-[#F5F7FA] font-bold truncate text-xs">${p.match}</p>
+                                        <p class="text-[10px] text-[#35C98A] mt-0.5">UID: ${p.uid} · Kills: <b>${p.kills}</b> · <b>${p.status}</b></p>
+                                        <p class="text-[10px] text-[#737D8B]">Room ID: ${p.roomId}</p>
+                                    </div>
+                                    <div class="w-14 h-14 bg-[#171C25] rounded-lg overflow-hidden border border-[#242B36] shrink-0">
+                                        <img src="${p.img}" class="w-full h-full object-cover">
+                                    </div>
+                                </div>
+                                <button onclick="removeProof('${key}')" class="w-full bg-[#F05C64]/20 text-[#F05C64] hover:bg-[#F05C64] hover:text-white py-1.5 rounded-lg font-gaming text-[10px] font-bold transition">REMOVE PROOF</button>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div></div>`;
+                container.innerHTML = html;
+            } else if (drawerNum === 8) {
+                let html = `<div class="esports-surface rounded-2xl p-3.5 space-y-3 text-xs"><h4 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase border-b border-[#242B36] pb-2.5">Tournament Rosters</h4><div class="space-y-2.5 max-h-[68vh] overflow-y-auto pr-1">`;
+                let trKeys = Object.keys(globalTournaments);
+                if (trKeys.length === 0 || Object.keys(globalJoins).length === 0) {
+                    html += `<p class="text-[#737D8B] text-xs py-4 text-center">No active roster registrations.</p>`;
+                } else {
+                    trKeys.forEach(trKey => {
+                        let tr = globalTournaments[trKey];
+                        let joinedUsers = globalJoins[trKey];
+                        if (joinedUsers) {
+                            html += `<div class="bg-[#0D1016] p-3 rounded-xl space-y-1.5 border border-[#242B36] text-xs"><p class="text-[#FF6A1A] font-gaming font-bold truncate text-xs">${tr.name} <span class="text-[#E8B04B]">(₹${tr.prize})</span></p>`;
+                            Object.keys(joinedUsers).forEach(phone => {
+                                let j = joinedUsers[phone];
+                                html += `<p class="text-[#A0A8B5] text-[11px] pl-2 border-l border-[#242B36] truncate">UID: <b class="text-[#F5F7FA]">${j.uid}</b> · Slot: <span class="text-[#35C98A]">${j.slotName || 'N/A'}</span></p>`;
+                            });
+                            html += `</div>`;
+                        }
+                    });
+                }
+                html += `</div></div>`;
+                container.innerHTML = html;
+            } else if (drawerNum === 9) {
+                container.innerHTML = `
+                    <div class="esports-surface rounded-2xl p-4 space-y-3 text-xs">
+                        <h4 class="font-gaming text-xs font-bold text-[#F5F7FA] uppercase border-b border-[#242B36] pb-2.5">Manage Admin Passkeys</h4>
+                        <input type="text" id="newAdminPass" placeholder="Enter New Admin Password" class="esports-input w-full rounded-xl px-3 py-2 text-xs">
+                        <button onclick="createNewAdminPass()" class="w-full btn-primary-orange font-gaming font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider">CREATE PASSKEY</button>
+                        <div class="space-y-1.5 max-h-44 overflow-y-auto pr-1 pt-1">
+                            <p class="text-[10px] text-[#737D8B] font-semibold uppercase">Active Custom Passkeys:</p>
+                `;
+                Object.keys(globalAdmins).forEach(key => {
+                    let a = globalAdmins[key];
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-[#0D1016] p-2.5 rounded-xl text-xs border border-[#242B36]">
+                            <span class="text-[#FF8B3D] font-mono font-bold truncate pr-2 text-xs">${a.password}</span>
+                            <button onclick="deleteAdminPass('${key}')" class="bg-[#F05C64]/20 text-[#F05C64] hover:bg-[#F05C64] hover:text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shrink-0 transition">DELETE</button>
+                        </div>
+                    `;
+                });
+                container.innerHTML += `</div></div>`;
+            }
+        }
+
+        function openGiveBonusModal(phone, encodedName, uid) {
+            activeBonusTargetPhone = phone;
+            document.getElementById('bonusUserNameDisplay').innerText = decodeURIComponent(encodedName);
+            document.getElementById('bonusUserUidDisplay').innerText = uid;
+            document.getElementById('bonusAmountInput').value = "";
+            document.getElementById('giveBonusModal').classList.remove('hidden');
+        }
+
+        function closeGiveBonusModal() {
+            document.getElementById('giveBonusModal').classList.add('hidden');
+            activeBonusTargetPhone = null;
+        }
+
+        function confirmGiveBonus() {
+            if (!activeBonusTargetPhone) return;
+            let amt = parseFloat(document.getElementById('bonusAmountInput').value.trim());
+            if (isNaN(amt) || amt <= 0) {
+                showModal("Error", "Please enter a valid bonus amount.", true);
+                return;
+            }
+
+            let targetUser = globalUsers[activeBonusTargetPhone];
+            if (targetUser) {
+                targetUser.balance = (targetUser.balance || 0) + amt;
+                if (!targetUser.history) targetUser.history = [];
+                targetUser.history.push({ desc: `Login Bonus Credited`, status: `+₹${amt} (COMPLETE)` });
+
+                window.FB.set(window.FB.ref(window.FB.db, 'users/' + activeBonusTargetPhone), targetUser).then(() => {
+                    closeGiveBonusModal();
+                    showModal("Bonus Credited Successfully", `₹${amt} successfully credited to ${targetUser.username}'s wallet!`, false, 2);
+                    if (window.activeAdminDrawer === 10) openAdminDrawer(10);
+                });
+            }
+        }
+
+        function filterAdminUsers() {
+            const query = document.getElementById('userSearchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.user-card');
+            cards.forEach(card => {
+                const uid = card.getAttribute('data-uid').toLowerCase();
+                const username = card.getAttribute('data-username').toLowerCase();
+                if (uid.includes(query) || username.includes(query)) card.style.display = 'block';
+                else card.style.display = 'none';
+            });
+        }
+
+        function updateUserBalanceAdmin(phone) {
+            if (!confirm("Are you sure you want to update this user's balance?")) return;
+            let inputEl = document.getElementById(`edit_user_bal_${phone}`);
+            let newBal = inputEl ? parseFloat(inputEl.value) || 0 : 0;
+            let u = globalUsers[phone];
+            if (u) {
+                u.balance = newBal;
+                window.FB.set(window.FB.ref(window.FB.db, 'users/' + phone), u).then(() => {
+                    showModal("Success", `User balance updated to ₹${newBal}!`, false, 2);
+                    openAdminDrawer(1);
+                });
+            }
+        }
+
+        function saveTournamentEdits(tKey) {
+            if (!confirm("Are you sure you want to save these tournament changes?")) return;
+            let name = document.getElementById(`edit_name_${tKey}`).value.trim();
+            let time = document.getElementById(`edit_time_${tKey}`).value.trim();
+            let fee = parseFloat(document.getElementById(`edit_fee_${tKey}`).value) || 0;
+            let prize = parseFloat(document.getElementById(`edit_prize_${tKey}`).value) || 0;
+            let perKill = parseFloat(document.getElementById(`edit_perkill_${tKey}`).value) || 0;
+            let roomInfo = document.getElementById(`edit_room_${tKey}`).value.trim();
+            let desc = document.getElementById(`edit_desc_${tKey}`) ? document.getElementById(`edit_desc_${tKey}`).value.trim() : '';
+
+            let tRef = window.FB.ref(window.FB.db, `tournaments/${tKey}`);
+            window.FB.get(tRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    let tData = snapshot.val();
+                    tData.name = name;
+                    tData.time = time;
+                    tData.fee = fee;
+                    tData.prize = prize;
+                    tData.perKill = perKill;
+                    tData.roomInfo = roomInfo;
+                    tData.desc = desc;
+                    window.FB.set(tRef, tData).then(() => {
+                        showModal("Saved Successfully", "Tournament details and room credentials updated permanently!", false, 2);
+                        openAdminDrawer(3);
+                        renderTournaments();
+                    }).catch((err) => {
+                        showModal("Error", "Failed to save tournament changes.", true);
+                    });
+                }
+            });
+        }
+
+        function toggleBlockUser(phone) {
+            let u = globalUsers[phone];
+            if (u) {
+                u.status = u.status === 'blocked' ? 'active' : 'blocked';
+                window.FB.set(window.FB.ref(window.FB.db, 'users/' + phone), u).then(() => {
+                    showModal("Updated", `User status changed to ${u.status}.`, false, 2);
+                    openAdminDrawer(1);
+                });
+            }
+        }
+
+        function deleteUser(phone) {
+            if (confirm("Are you sure you want to delete this user?")) {
+                window.FB.remove(window.FB.ref(window.FB.db, 'users/' + phone)).then(() => {
+                    showModal("Deleted", "User account removed.", false, 2);
+                    openAdminDrawer(1);
+                });
+            }
+        }
+
+        function createNewAdminPass() {
+            const pass = document.getElementById('newAdminPass').value.trim();
+            if (!pass) return showModal("Error", "Please enter a password.", true);
+            const refKey = window.FB.push(window.FB.ref(window.FB.db, 'customAdmins')).key;
+            window.FB.set(window.FB.ref(window.FB.db, 'customAdmins/' + refKey), { password: pass }).then(() => {
+                showModal("Success", "New admin password created!", false, 2);
+                openAdminDrawer(9);
+            });
+        }
+
+        function deleteAdminPass(key) {
+            window.FB.remove(window.FB.ref(window.FB.db, 'customAdmins/' + key)).then(() => {
+                showModal("Deleted", "Admin password removed.", false, 2);
+                openAdminDrawer(9);
+            });
+        }
+
+        function updatePlatformStats() {
+            let tKeys = Object.keys(globalTournaments);
+            let totalMatches = tKeys.length;
+            let totalPlayers = Object.keys(globalUsers).length;
+            let totalPrize = 0;
+            tKeys.forEach(k => { totalPrize += (parseFloat(globalTournaments[k].prize) || 0); });
+
+            const sm = document.getElementById('statTotalMatches');
+            const sp = document.getElementById('statTotalPlayers');
+            const spr = document.getElementById('statTotalPrize');
+            if (sm) sm.innerText = totalMatches;
+            if (sp) sp.innerText = totalPlayers;
+            if (spr) spr.innerText = "₹" + totalPrize;
+        }
+
+        function adminCreateTournament() {
+            const name = document.getElementById('adminTrName').value.trim();
+            const category = document.getElementById('adminTrCategory').value;
+            const mode = document.getElementById('adminTrMode').value;
+            const fee = parseFloat(document.getElementById('adminTrFee').value.trim());
+            const prize = parseFloat(document.getElementById('adminTrPrize').value.trim());
+            const perKill = parseFloat(document.getElementById('adminTrPerKill').value.trim()) || 0;
+            const time = document.getElementById('adminTrTime').value.trim();
+            const roomInfo = document.getElementById('adminTrRoomId').value.trim();
+            const desc = document.getElementById('adminTrDesc').value.trim();
+
+            if(!name || isNaN(fee) || isNaN(prize) || !time) {
+                return showModal("Error", "Please fill out all required tournament fields correctly.", true);
+            }
+
+            const newTrRef = window.FB.push(window.FB.ref(window.FB.db, 'tournaments'));
+            const trId = newTrRef.key;
+            const trObj = { id: trId, name, category, mode, fee, prize, perKill, time, roomInfo, desc, createdAt: Date.now(), status: 'upcoming' };
+
+            window.FB.set(newTrRef, trObj).then(() => {
+                showModal("Success", "Tournament published successfully!", false, 2);
+                openAdminDrawer(2);
+            });
+        }
+
+        function confirmAndUpdateMatchStatus(trKey, newStatus) {
+            let confirmMsg = newStatus === 'live' ? "Are you sure you want to start this match?" : "Are you sure you want to mark this match as completed?";
+            if (confirm(confirmMsg)) {
+                updateMatchStatus(trKey, newStatus);
+            }
+        }
+
+        function updateMatchStatus(trKey, newStatus) {
+            window.FB.set(window.FB.ref(window.FB.db, `tournaments/${trKey}/status`), newStatus).then(() => {
+                showModal("Match Status Updated", `Tournament status updated to ${newStatus.toUpperCase()} successfully!`, false, 2);
+                openAdminDrawer(3);
+                renderTournaments();
+            }).catch((error) => {
+                showModal("Error", "Failed to update match status: " + error.message, true);
+            });
+        }
+
+        function removeCompletedResult(trKey) {
+            if (confirm("Are you sure you want to remove this completed match result?")) {
+                window.FB.remove(window.FB.ref(window.FB.db, `tournaments/${trKey}`)).then(() => {
+                    window.FB.remove(window.FB.ref(window.FB.db, `joins/${trKey}`));
+                    showModal("Removed", "Completed match removed successfully.", false, 2);
+                    openAdminDrawer(3);
+                });
+            }
+        }
+
+        function deleteTournament(key) {
+            if (confirm("Are you sure you want to permanently delete this tournament?")) {
+                window.FB.remove(window.FB.ref(window.FB.db, `tournaments/${key}`)).then(() => {
+                    window.FB.remove(window.FB.ref(window.FB.db, `joins/${key}`));
+                    showModal("Deleted", "Tournament deleted successfully.", false, 2);
+                    openAdminDrawer(3);
+                    renderTournaments();
+                });
+            }
+        }
+
+        function declareWinnerWithKills(trKey, phone, uid, prizePool, perKillRate, matchName) {
+            let killsInput = document.getElementById(`kills_${trKey}_${phone}`);
+            let kills = parseInt(killsInput ? killsInput.value : 0) || 0;
+            let killEarnings = kills * perKillRate;
+            let totalPayout = prizePool + killEarnings;
+
+            if (confirm(`Declare winner UID ${uid} with ${kills} kills? Total Payout: ₹${totalPayout} (Prize: ₹${prizePool} + Kills: ₹${killEarnings})`)) {
+                let targetUser = globalUsers[phone];
+                if (targetUser) {
+                    targetUser.balance = (targetUser.balance || 0) + totalPayout;
+                    targetUser.totalWon = (targetUser.totalWon || 0) + totalPayout;
+                    if (!targetUser.history) targetUser.history = [];
+                    targetUser.history.push({ desc: `Won ${matchName}! (Prize ₹${prizePool} + ${kills} Kills ₹${killEarnings})`, status: `+₹${totalPayout} (Win)` });
+                    window.FB.set(window.FB.ref(window.FB.db, 'users/' + phone), targetUser);
+                }
+                window.FB.set(window.FB.ref(window.FB.db, `tournaments/${trKey}/status`), 'completed');
+                window.FB.remove(window.FB.ref(window.FB.db, `joins/${trKey}/${phone}`)).then(() => {
+                    showModal("Winner Paid Successfully", `₹${totalPayout} added to player account!`, false, 2);
+                    openAdminDrawer(3);
+                    renderTournaments();
+                });
+            }
+        }
+
+        function filterTournaments(category) {
+            currentFilter = category;
+            const bar = document.getElementById('tourneyFilterBar');
+            if (bar) {
+                const btns = bar.querySelectorAll('button');
+                btns.forEach(b => {
+                    const label = b.innerText.trim();
+                    const isMatch = (category === 'all' && label === 'All') || (label === category);
+                    if (isMatch) {
+                        b.className = "bg-[#FF6A1A] text-white px-3 py-1.5 rounded-lg font-bold font-gaming shrink-0 transition";
+                    } else {
+                        b.className = "bg-[#11151D] border border-[#242B36] text-[#A0A8B5] hover:text-white px-3 py-1.5 rounded-lg font-semibold font-gaming shrink-0 transition";
+                    }
+                });
+            }
+            renderTournaments();
+        }
+
+        function renderTournaments() {
+            let html = "";
+            const keys = Object.keys(globalTournaments);
+
+            keys.forEach(key => {
+                let t = globalTournaments[key];
+                let status = t.status || 'upcoming';
+
+                if (currentTourneySection === 'upcoming' && status !== 'upcoming') return;
+                if (currentTourneySection === 'live' && status !== 'live') return;
+                if (currentTourneySection === 'results' && status !== 'completed') return;
+
+                if (currentFilter !== 'all' && t.category !== currentFilter) return;
+
+                let isJoined = false;
+                if (currentUser && globalJoins[t.id] && globalJoins[t.id][currentUser.phone]) {
+                    isJoined = true;
+                }
+
+                if (currentTourneySection === 'results') {
+                    html += `
+                        <div class="esports-surface p-3.5 rounded-2xl space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-[#171C25] border border-[#242B36] text-[#A0A8B5] text-[9px] font-gaming px-2 py-0.5 rounded-md font-bold uppercase">Completed</span>
+                                <span class="text-[10px] text-[#737D8B]">${t.category} · ${t.mode || 'Solo'}</span>
+                            </div>
+                            <h3 class="font-gaming text-sm font-bold text-[#F5F7FA] truncate">${t.name}</h3>
+                            <div class="flex items-center justify-between text-[11px] text-[#A0A8B5] bg-[#0D1016] px-3 py-2 rounded-xl border border-[#242B36]">
+                                <span>Prize Pool: <b class="text-[#E8B04B] font-gaming">₹${t.prize}</b></span>
+                                <span>Per Kill: <b class="text-[#35C98A] font-gaming">₹${t.perKill || 0}</b></span>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let statusBadge = status === 'live' 
+                    ? `<span class="inline-flex items-center gap-1.5 bg-[#F05C64]/15 border border-[#F05C64]/30 text-[#F05C64] text-[9px] font-gaming px-2 py-0.5 rounded-md font-bold uppercase"><span class="w-1.5 h-1.5 rounded-full bg-[#F05C64] live-dot"></span>LIVE</span>` 
+                    : `<span class="inline-flex items-center gap-1 bg-[#35C98A]/12 border border-[#35C98A]/25 text-[#35C98A] text-[9px] font-gaming px-2 py-0.5 rounded-md font-bold uppercase">OPEN</span>`;
+
+                let btnHtml = `<button onclick="openSlotBooking('${t.id}', '${t.mode || 'Solo'}', ${t.fee}, '${encodeURIComponent(t.name || '')}')" class="w-full btn-primary-orange font-gaming text-xs font-bold py-2.5 rounded-xl uppercase tracking-wider">JOIN MATCH · ₹${t.fee}</button>`;
+
+                if (isJoined) {
+                    statusBadge = `<span class="inline-flex items-center gap-1 bg-[#FF6A1A]/15 border border-[#FF6A1A]/35 text-[#FF8B3D] text-[9px] font-gaming px-2 py-0.5 rounded-md font-bold uppercase"><i class="fa-solid fa-check text-[8px]"></i> REGISTERED</span>`;
+                    let mySlot = globalJoins[t.id][currentUser.phone].slotName || 'Booked';
+                    let roomPassDisplay = (status === 'live' || status === 'completed') ? (t.roomInfo || 'Will be shared soon') : 'Locked until match goes LIVE';
+                    btnHtml = `
+                        <div class="bg-[#0D1016] border border-[#35C98A]/35 p-2.5 rounded-xl space-y-1">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="text-[#35C98A] font-bold">Slot Confirmed: ${mySlot}</span>
+                                <i class="fa-solid fa-circle-check text-[#35C98A]"></i>
+                            </div>
+                            <p class="text-[10px] text-[#E8B04B] truncate font-medium">Room ID/Pass: <b class="font-gaming">${roomPassDisplay}</b></p>
+                        </div>
+                    `;
+                } else if (status === 'live') {
+                    btnHtml = `<div class="bg-[#0D1016] border border-[#242B36] p-2.5 rounded-xl text-center"><p class="text-[11px] text-[#E8B04B] font-semibold">Match in progress · Registration closed</p></div>`;
+                }
+
+                html += `
+                    <div class="esports-surface p-3.5 rounded-2xl space-y-3 hover:border-[#FF6A1A]/45 transition">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="overflow-hidden">
+                                <div class="flex items-center gap-2 mb-1">
+                                    ${statusBadge}
+                                    <span class="text-[10px] text-[#737D8B] font-medium truncate"><i class="fa-regular fa-clock mr-1 text-[#FF6A1A]"></i>${t.time}</span>
+                                </div>
+                                <h3 class="font-gaming text-sm font-bold text-[#F5F7FA] truncate">${t.name}</h3>
+                            </div>
+                            <div class="text-right shrink-0 bg-[#0D1016] border border-[#242B36] px-2.5 py-1.5 rounded-xl">
+                                <p class="text-[9px] text-[#737D8B] uppercase font-semibold">Prize Pool</p>
+                                <p class="font-gaming text-xs font-extrabold text-[#E8B04B]">₹${t.prize}</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center bg-[#0D1016] p-2 rounded-xl border border-[#242B36] text-[10px]">
+                            <div class="truncate text-[#737D8B]">Map: <span class="text-[#F5F7FA] font-bold">${t.category}</span></div>
+                            <div class="truncate text-[#737D8B] border-x border-[#242B36]">Mode: <span class="text-[#F5F7FA] font-bold">${t.mode || 'Solo'}</span></div>
+                            <div class="truncate text-[#737D8B]">Kill: <span class="text-[#35C98A] font-bold">₹${t.perKill || 0}</span></div>
+                        </div>
+                        ${btnHtml}
+                    </div>
+                `;
+            });
+
+            if(keys.length === 0 || html === "") {
+                html = `
+                    <div class="esports-surface p-6 rounded-2xl text-center space-y-1.5">
+                        <i class="fa-solid fa-trophy text-xl text-[#737D8B]"></i>
+                        <p class="font-gaming text-xs font-bold text-[#F5F7FA]">No Matches Found</p>
+                        <p class="text-[11px] text-[#737D8B]">There are currently no tournaments in the ${currentTourneySection} bracket.</p>
+                    </div>
+                `;
+            }
+
+            const tourneyList = document.getElementById('tournamentsListContainer');
+            if(tourneyList) tourneyList.innerHTML = html;
+        }
+
+        function renderMyTournaments() {
+            let container = document.getElementById('myJoinedTournamentsContainer');
+            if (!container || !currentUser) return;
+
+            let html = "";
+            let keys = Object.keys(globalTournaments);
+            let hasJoinedAny = false;
+
+            keys.forEach(key => {
+                let t = globalTournaments[key];
+                if (globalJoins[t.id] && globalJoins[t.id][currentUser.phone]) {
+                    hasJoinedAny = true;
+                    let joinInfo = globalJoins[t.id][currentUser.phone];
+                    let status = t.status || 'upcoming';
+                    let roomPassDisplay = (status === 'live' || status === 'completed') ? (t.roomInfo || 'Will be shared soon') : 'Locked until match goes LIVE';
+                    html += `
+                        <div class="esports-surface p-3.5 rounded-2xl border-l-2 border-l-[#FF6A1A] space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-[#FF6A1A]/15 text-[#FF8B3D] text-[9px] font-gaming px-2 py-0.5 rounded font-bold uppercase">CONFIRMED ENTRY</span>
+                                <span class="text-[10px] text-[#737D8B]"><i class="fa-regular fa-clock mr-1"></i>${t.time}</span>
+                            </div>
+                            <h3 class="font-gaming text-sm font-bold text-[#F5F7FA] truncate">${t.name}</h3>
+                            <div class="bg-[#0D1016] p-2.5 rounded-xl border border-[#242B36] space-y-1.5 text-[11px]">
+                                <div class="flex justify-between">
+                                    <span class="text-[#A0A8B5]">Assigned Position:</span>
+                                    <b class="text-[#35C98A] font-gaming">${joinInfo.slotName || 'Confirmed'}</b>
+                                </div>
+                                <div class="flex justify-between items-center pt-1 border-t border-[#242B36]">
+                                    <span class="text-[#A0A8B5]">Room Credentials:</span>
+                                    <b class="text-[#E8B04B] font-gaming truncate max-w-[60%]">${roomPassDisplay}</b>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            if (!hasJoinedAny) {
+                html = `
+                    <div class="esports-surface p-6 rounded-2xl text-center space-y-2">
+                        <i class="fa-solid fa-gamepad text-xl text-[#737D8B]"></i>
+                        <p class="font-gaming text-xs font-bold text-[#F5F7FA]">No Active Registrations</p>
+                        <p class="text-[11px] text-[#737D8B]">Join an upcoming tournament to see your slot and room credentials here.</p>
+                        <button onclick="switchTab('tournaments')" class="mt-2 btn-primary-orange font-gaming text-[11px] font-bold px-4 py-2 rounded-xl">EXPLORE MATCHES</button>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function openSlotBooking(matchId, mode, fee, matchNameEnc) {
+            if(!currentUser) return showModal("Error", "Please login first.", true);
+            selectedMatchForSlot = { matchId, fee, mode };
+            selectedSlotKey = null;
+
+            let decodedName = decodeURIComponent(matchNameEnc || 'TOURNAMENT');
+            document.getElementById('slotModalTitle').innerText = `${decodedName} (${mode})`;
+            document.getElementById('slotGameUidInput').value = currentUser.uid || "";
+
+            renderSlotGrid();
+            document.getElementById('slotBookingModal').classList.remove('hidden');
+        }
+
+        function renderSlotGrid() {
+            if (!selectedMatchForSlot) return;
+            let matchId = selectedMatchForSlot.matchId;
+            let mode = selectedMatchForSlot.mode || 'Solo';
+
+            let joinedForMatch = globalJoins[matchId] || {};
+            let bookedSlotsMap = {};
+            Object.keys(joinedForMatch).forEach(ph => {
+                let info = joinedForMatch[ph];
+                if (info.slotKey !== undefined) {
+                    bookedSlotsMap[info.slotKey] = info.uid;
+                }
+            });
+
+            let gridHtml = "";
+
+            if (mode === 'Solo' || mode === '1v1') {
+                let totalSlots = mode === '1v1' ? 2 : 48;
+                gridHtml += `<p class="text-[10px] text-[#A0A8B5] mb-1.5 font-gaming font-bold uppercase tracking-wider">Select Match Position (${totalSlots} Slots)</p>`;
+                gridHtml += `<div class="grid grid-cols-4 gap-2">`;
+                for (let i = 1; i <= totalSlots; i++) {
+                    let sKey = `solo_${i}`;
+                    let isBooked = bookedSlotsMap[sKey] !== undefined;
+                    let isSelected = selectedSlotKey && selectedSlotKey.key === sKey;
+
+                    gridHtml += `
+                        <div onclick="${isBooked ? '' : `selectSlotKey('${sKey}', 'Slot ${i}')`}" class="flex items-center justify-between px-2.5 py-2 rounded-xl border ${isBooked ? 'bg-[#0D1016] border-[#242B36] opacity-55 cursor-not-allowed' : (isSelected ? 'border-[#FF6A1A] bg-[#FF6A1A]/15' : 'border-[#242B36] bg-[#11151D] cursor-pointer hover:border-[#FF6A1A]/60')} transition">
+                            <span class="font-gaming text-xs font-bold ${isBooked ? 'text-[#737D8B]' : 'text-[#F5F7FA]'}">${i}</span>
+                            <input type="checkbox" class="slot-checkbox" ${isBooked ? 'checked disabled' : (isSelected ? 'checked' : '')}>
+                        </div>
+                    `;
+                }
+                gridHtml += `</div>`;
+            } else if (mode === 'Duo' || mode === '2v2' || mode === '4v4' || mode === '6v6') {
+                let slotsPerTeam = 24;
+                if (mode === '2v2') slotsPerTeam = 2;
+                if (mode === '4v4') slotsPerTeam = 4;
+                if (mode === '6v6') slotsPerTeam = 6;
+
+                gridHtml += `<p class="text-[10px] text-[#A0A8B5] mb-1.5 font-gaming font-bold uppercase tracking-wider">Team A & Team B Roster Positions</p>`;
+                gridHtml += `<div class="grid grid-cols-2 gap-2.5">`;
+                
+                // Team A
+                gridHtml += `<div class="esports-surface p-2.5 rounded-xl space-y-1.5"><h4 class="font-gaming text-[11px] font-bold text-[#FF6A1A] uppercase text-center border-b border-[#242B36] pb-1.5">Team A</h4>`;
+                for (let i = 1; i <= slotsPerTeam; i++) {
+                    let sKey = `teamA_${i}`;
+                    let isBooked = bookedSlotsMap[sKey] !== undefined;
+                    let isSelected = selectedSlotKey && selectedSlotKey.key === sKey;
+                    gridHtml += `
+                        <div onclick="${isBooked ? '' : `selectSlotKey('${sKey}', 'Team A - Slot ${i}')`}" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg border ${isBooked ? 'bg-[#08090C] border-[#242B36] opacity-55 cursor-not-allowed' : (isSelected ? 'border-[#FF6A1A] bg-[#FF6A1A]/15' : 'border-[#242B36] bg-[#0D1016] cursor-pointer hover:border-[#FF6A1A]/60')} transition">
+                            <span class="font-gaming text-[11px] font-bold text-[#F5F7FA]">Slot ${i}</span>
+                            <input type="checkbox" class="slot-checkbox" ${isBooked ? 'checked disabled' : (isSelected ? 'checked' : '')}>
+                        </div>
+                    `;
+                }
+                gridHtml += `</div>`;
+
+                // Team B
+                gridHtml += `<div class="esports-surface p-2.5 rounded-xl space-y-1.5"><h4 class="font-gaming text-[11px] font-bold text-[#E8B04B] uppercase text-center border-b border-[#242B36] pb-1.5">Team B</h4>`;
+                for (let i = 1; i <= slotsPerTeam; i++) {
+                    let sKey = `teamB_${i}`;
+                    let isBooked = bookedSlotsMap[sKey] !== undefined;
+                    let isSelected = selectedSlotKey && selectedSlotKey.key === sKey;
+                    gridHtml += `
+                        <div onclick="${isBooked ? '' : `selectSlotKey('${sKey}', 'Team B - Slot ${i}')`}" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg border ${isBooked ? 'bg-[#08090C] border-[#242B36] opacity-55 cursor-not-allowed' : (isSelected ? 'border-[#FF6A1A] bg-[#FF6A1A]/15' : 'border-[#242B36] bg-[#0D1016] cursor-pointer hover:border-[#FF6A1A]/60')} transition">
+                            <span class="font-gaming text-[11px] font-bold text-[#F5F7FA]">Slot ${i}</span>
+                            <input type="checkbox" class="slot-checkbox" ${isBooked ? 'checked disabled' : (isSelected ? 'checked' : '')}>
+                        </div>
+                    `;
+                }
+                gridHtml += `</div></div>`;
+
+            } else {
+                // Squad Map (12 Teams: A to L, 4 slots each)
+                gridHtml += `<p class="text-[10px] text-[#A0A8B5] mb-1.5 font-gaming font-bold uppercase tracking-wider">Squad Map (12 Teams × 4 Players)</p>`;
+                let teams = ['Team A', 'Team B', 'Team C', 'Team D', 'Team E', 'Team F', 'Team G', 'Team H', 'Team I', 'Team J', 'Team K', 'Team L'];
+                teams.forEach(teamName => {
+                    let tPrefix = teamName.replace(/\s+/g, '');
+                    gridHtml += `<div class="esports-surface p-2.5 rounded-xl mb-2 space-y-1.5"><h4 class="font-gaming text-[11px] font-bold text-[#FF8B3D] uppercase">${teamName}</h4><div class="grid grid-cols-4 gap-1.5">`;
+                    for (let i = 1; i <= 4; i++) {
+                        let sKey = `${tPrefix}_${i}`;
+                        let isBooked = bookedSlotsMap[sKey] !== undefined;
+                        let isSelected = selectedSlotKey && selectedSlotKey.key === sKey;
+                        gridHtml += `
+                            <div onclick="${isBooked ? '' : `selectSlotKey('${sKey}', '${teamName} - P${i}')`}" class="flex items-center justify-between px-2 py-1.5 rounded-lg border ${isBooked ? 'bg-[#08090C] border-[#242B36] opacity-55 cursor-not-allowed' : (isSelected ? 'border-[#FF6A1A] bg-[#FF6A1A]/15' : 'border-[#242B36] bg-[#0D1016] cursor-pointer hover:border-[#FF6A1A]/60')} transition">
+                                <span class="font-gaming text-[10px] font-bold text-[#F5F7FA]">P${i}</span>
+                                <input type="checkbox" class="slot-checkbox" style="width:14px;height:14px;" ${isBooked ? 'checked disabled' : (isSelected ? 'checked' : '')}>
+                            </div>
+                        `;
+                    }
+                    gridHtml += `</div></div>`;
+                });
+            }
+
+            document.getElementById('slotGridContainer').innerHTML = gridHtml;
+        }
+
+        function selectSlotKey(key, displayName) {
+            selectedSlotKey = { key, displayName };
+            renderSlotGrid();
+        }
+
+        function closeSlotModal() {
+            document.getElementById('slotBookingModal').classList.add('hidden');
+            selectedMatchForSlot = null;
+            selectedSlotKey = null;
+        }
+
+        document.getElementById('finalConfirmSlotBtn').addEventListener('click', () => {
+            if (!selectedMatchForSlot) return;
+            if (selectedSlotKey === null) {
+                return showModal("Error", "Please select an available slot position first!", true);
+            }
+            const enteredUid = document.getElementById('slotGameUidInput').value.trim();
+            if (!enteredUid) {
+                return showModal("Error", "Free Fire UID is mandatory!", true);
+            }
+            currentUser.uid = enteredUid;
+            saveUserSession();
+
+            const { matchId, fee } = selectedMatchForSlot;
+            const currentBal = currentUser.balance || 0;
+            if (currentBal < fee) {
+                closeSlotModal();
+                showModal("Insufficient Balance", `Your balance is ₹${currentBal}, but entry fee is ₹${fee}. Please deposit funds!`, true);
+                switchTab('wallet');
+                return;
+            }
+
+            currentUser.balance -= fee;
+            saveUserSession();
+            updateUserUI();
+
+            const joinRef = window.FB.ref(window.FB.db, `joins/${matchId}/${currentUser.phone}`);
+            window.FB.set(joinRef, { 
+                phone: currentUser.phone, 
+                uid: currentUser.uid, 
+                slotKey: selectedSlotKey.key,
+                slotName: selectedSlotKey.displayName,
+                joinedAt: Date.now() 
+            }).then(() => {
+                closeSlotModal();
+                showModal("Slot Booked Successfully!", `Position ${selectedSlotKey.displayName} confirmed!`, false, 3);
+                renderTournaments();
+                renderMyTournaments();
+            });
+        });
+
+        function submitDeposit() {
+            const utr = document.getElementById('depositUtr').value.trim();
+            const amt = parseFloat(document.getElementById('depositAmount').value.trim());
+            
+            if(!utr || isNaN(amt)) return showModal("Error", "Please enter UTR and amount.", true);
+            if(amt < 10) return showModal("Notice", "Minimum deposit is ₹10", true, 2);
+
+            const newReqRef = window.FB.push(window.FB.ref(window.FB.db, 'requests'));
+            const reqObj = { id: newReqRef.key, type: 'deposit', phone: currentUser.phone, uid: currentUser.uid, amt, utr, status: 'pending' };
+            
+            window.FB.set(newReqRef, reqObj).then(() => {
+                if(!currentUser.history) currentUser.history = [];
+                currentUser.history.push({ desc: `Deposit Request ₹${amt} (UTR: ${utr})`, status: 'Pending' });
+                saveUserSession();
+                updateUserUI();
+                showModal("Success", "Deposit Request Sent", false, 2);
+                document.getElementById('depositUtr').value = "";
+                document.getElementById('depositAmount').value = "";
+            });
+        }
+
+        function submitWithdraw() {
+            const amt = parseFloat(document.getElementById('withdrawAmount').value.trim());
+            const upi = document.getElementById('withdrawUpi').value.trim();
+
+            if (isNaN(amt) || !upi || !activeWithdrawQrBase64) {
+                showModal("Withdrawal Notice", "Please upload your UPI QR Code and fill all details before submitting.", true);
+                return;
+            }
+
+            if((currentUser.balance || 0) < amt) return showModal("Insufficient Balance", "Insufficient balance for withdrawal.", true, 2);
+
+            currentUser.balance -= amt;
+            const newReqRef = window.FB.push(window.FB.ref(window.FB.db, 'requests'));
+            const reqObj = { id: newReqRef.key, type: 'withdraw', phone: currentUser.phone, uid: currentUser.uid, amt, upi, qrImg: activeWithdrawQrBase64, status: 'pending' };
+
+            window.FB.set(newReqRef, reqObj).then(() => {
+                if(!currentUser.history) currentUser.history = [];
+                currentUser.history.push({ desc: `Withdraw Request ₹${amt} (${upi})`, status: 'Pending' });
+                saveUserSession();
+                updateUserUI();
+                
+                document.getElementById('withdrawAmount').value = "";
+                document.getElementById('withdrawUpi').value = "";
+                document.getElementById('withdrawQrInput').value = "";
+                activeWithdrawQrBase64 = "";
+                document.getElementById('withdrawQrThumbContainer').classList.add('hidden');
+
+                showModal("Success", "Withdrawal Request Sent", false, 2);
+            });
+        }
+
+        function handleAdminDepositRequest(key, action) {
+            let targetReq = globalRequests[key];
+            if (!targetReq) return;
+
+            let editedInput = document.getElementById(`edit_dep_amt_${key}`);
+            let finalAmt = editedInput ? parseFloat(editedInput.value) || targetReq.amt : targetReq.amt;
+
+            let targetUser = globalUsers[targetReq.phone];
+            if(targetUser) {
+                if(!targetUser.history) targetUser.history = [];
+                if(action === 'accept') {
+                    targetUser.balance = (targetUser.balance || 0) + finalAmt;
+                    targetUser.history.push({ desc: `Deposit ₹${finalAmt}`, status: 'COMPLETE' });
+                } else {
+                    targetUser.balance = (targetUser.balance || 0) + finalAmt;
+                    targetUser.history.push({ desc: `Deposit ₹${finalAmt}`, status: 'REJECTED' });
+                }
+                window.FB.set(window.FB.ref(window.FB.db, 'users/' + targetReq.phone), targetUser);
+            }
+
+            window.FB.remove(window.FB.ref(window.FB.db, 'requests/' + key)).then(() => {
+                showModal("Updated", `Deposit request approved and marked COMPLETE with ₹${finalAmt}!`, false, 2);
+                if (window.activeAdminDrawer === 5) openAdminDrawer(5);
+            });
+        }
+
+        function handleAdminRequest(key, action) {
+            let targetReq = globalRequests[key];
+            if (!targetReq) return;
+
+            let targetUser = globalUsers[targetReq.phone];
+            if(targetUser) {
+                if(!targetUser.history) targetUser.history = [];
+                if(targetReq.type === 'withdraw') {
+                    if(action === 'accept') {
+                        targetUser.history.push({ desc: `Withdraw ₹${targetReq.amt}`, status: 'COMPLETE' });
+                    } else {
+                        targetUser.balance = (targetUser.balance || 0) + targetReq.amt;
+                        targetUser.history.push({ desc: `Withdraw ₹${targetReq.amt}`, status: 'REJECTED (Refunded)' });
+                    }
+                }
+                window.FB.set(window.FB.ref(window.FB.db, 'users/' + targetReq.phone), targetUser);
+            }
+
+            window.FB.remove(window.FB.ref(window.FB.db, 'requests/' + key)).then(() => {
+                showModal("Updated", `Request marked as ${action === 'accept' ? 'COMPLETE' : 'REJECTED'} successfully!`, false, 2);
+                if (window.activeAdminDrawer === 6) openAdminDrawer(6);
+            });
+        }
+
+        function renderTransactionHistory() {
+            if(!currentUser || !currentUser.history) return;
+            let html = "";
+            currentUser.history.slice().reverse().forEach(h => {
+                let color = h.status.includes('COMPLETE') || h.status.includes('Win') ? 'text-[#35C98A]' : (h.status.includes('REJECTED') || h.status.includes('Failed') ? 'text-[#F05C64]' : 'text-[#E8B04B]');
+                html += `<div class="flex justify-between items-center border-b border-[#242B36] pb-1.5 text-[11px]"><span class="truncate pr-2 text-[#A0A8B5]">${h.desc}</span> <span class="${color} font-gaming font-bold shrink-0">${h.status}</span></div>`;
+            });
+            document.getElementById('userTransactionHistory').innerHTML = html || "<p class='text-[#737D8B] text-[11px]'>No transactions recorded yet.</p>";
+        }
+
+        function clearTransactionHistory() {
+            if (!currentUser) return;
+            if (confirm("Are you sure you want to clear your transaction history?")) {
+                currentUser.history = [];
+                saveUserSession();
+                updateUserUI();
+                showModal("Cleared", "Transaction history cleared.", false, 2);
+            }
+        }
+
+        function sendResultToAdmin() {
+            if(!currentUser) return showModal("Error", "Please login first.", true);
+            const match = document.getElementById('resMatchName').value.trim();
+            const kills = document.getElementById('resKills').value.trim();
+            const status = document.getElementById('resWinStatus').value;
+            const roomId = document.getElementById('resRoomId').value.trim();
+            const gameUid = document.getElementById('resGameUid').value.trim();
+            const fileInput = document.getElementById('resScreenshot');
+
+            if(!match || !kills || !roomId || !gameUid || !fileInput.files[0]) {
+                return showModal("Error", "Please fill all result fields and upload screenshot.", true);
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newProofRef = window.FB.push(window.FB.ref(window.FB.db, 'proofs'));
+                const proofObj = { id: newProofRef.key, uid: gameUid, phone: currentUser.phone, match, kills, status, roomId, img: e.target.result };
+
+                window.FB.set(newProofRef, proofObj).then(() => {
+                    showModal("Sent Successfully", "Result proof sent to Admin!", false, 2);
+                    document.getElementById('resMatchName').value = "";
+                    document.getElementById('resKills').value = "";
+                    document.getElementById('resRoomId').value = "";
+                    document.getElementById('resGameUid').value = "";
+                    fileInput.value = "";
+                });
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        function removeProof(key) {
+            window.FB.remove(window.FB.ref(window.FB.db, 'proofs/' + key)).then(() => {
+                showModal("Removed", "Proof removed.", false, 2);
+                openAdminDrawer(7);
+            });
+        }
+
+        function saveAdminQr() {
+            const fileInput = document.getElementById('adminQrUpload');
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    window.FB.set(window.FB.ref(window.FB.db, 'qrCode'), e.target.result).then(() => {
+                        showModal("QR successfully uploaded", "Deposit QR updated globally!", false, 2);
+                        openAdminDrawer(4);
+                    });
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                showModal("Error", "Please select an image file first.", true);
+            }
+        }
+
+        function saveWebsiteSettings() {
+            const siteName = document.getElementById('adminSiteNameInput').value.trim();
+            const adminUpi = document.getElementById('adminUpiInput').value.trim();
+            const whatsapp = document.getElementById('adminWhatsappInput').value.trim();
+
+            window.FB.set(window.FB.ref(window.FB.db, 'settings'), { siteName, adminUpi });
+            window.FB.set(window.FB.ref(window.FB.db, 'whatsappNumber'), whatsapp).then(() => {
+                showModal("Success", "Website settings updated successfully!", false, 2);
+            });
+        }
+
+        function updateDisplayQr(qrSrc) {
+            const container = document.getElementById('qrCodeContainer');
+            if (container && qrSrc) {
+                container.innerHTML = `<img src="${qrSrc}" class="w-full h-full object-cover">`;
+            }
+        }
+
+        function saveUserSession() {
+            if(currentUser) {
+                window.FB.set(window.FB.ref(window.FB.db, 'users/' + currentUser.phone), currentUser);
+            }
+        }
+    </script>
+</body>
+</html>
